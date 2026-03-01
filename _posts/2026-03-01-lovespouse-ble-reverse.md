@@ -5,12 +5,13 @@ categories: [IoT]
 tags: [bluetooth, reverse-engineering, ble]
 ---
 
-# lovespouse-ble-reverse
+# Lovespouse BLE reverse
 
 ## Context
 
 Most entry-level connected vibrators operate with the Love-Spouse application.
-<p align="center">
+
+<p style="text-align: center;">
 <img src="/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png" width="250" alt="">
 </p>
 
@@ -21,7 +22,7 @@ When powering on the vibrating egg to pair it with the mobile application, it is
 It is very common (though not mandatory) for devices to enter discoverable mode during pairing.
 Moreover, when attempting to pair the sex toy with the application, even though it is powered off, no error is displayed on the Android application and we can select a vibration mode despite it not being paired with the phone.
 
-<p align="center">
+<p style="text-align: center;">
 <img src="/assets/img/posts/lovespouse-ble-reverse/false-connection.png" width="250" alt="">
 </p>
 
@@ -47,7 +48,7 @@ adb install love-spouse-1-8-9.apk
 
 Press each of the vibration modes (9) and request a bugreport. This will contain Bluetooth logs that we will analyze.
 
-<p align="center">
+<p style="text-align: center;">
 <img src="/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png" width="250" alt="">
 </p>
 
@@ -64,8 +65,8 @@ unzip bugreport.zip "*/btsnooz_hci.log"
 
 First, we open it with Wireshark. We can observe many advertising packets sent by our phone. These don't contain the usual information.
 
-<p align="center">
-<img src="/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png" width="800" alt="">
+<p style="text-align: center;">
+<img src="/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png" width="250" alt="">
 </p>
 
 We will formulate the following hypothesis: 
@@ -240,8 +241,8 @@ sudo apt install bluez
 ```
 Running our script requires root privileges.
 
-<p align="center">
-<img src="/assets/img/posts/lovespouse-ble-reverse/poc-control.png" width="800" alt="">
+<p style="text-align: center;">
+<img src="/assets/img/posts/lovespouse-ble-reverse/poc-control.png" width="250" alt="">
 </p>
 
 ## Conclusion
