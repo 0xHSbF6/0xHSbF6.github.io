@@ -60,7 +60,7 @@ unzip bugreport.zip "*/btsnooz_hci.log"
 
 First, we open it with Wireshark. We can observe many advertising packets sent by our phone. These don't contain the usual information.
 
-![alt](/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png){: width="750" .center}
+![alt](/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png){: width="850" .center}
 
 We will formulate the following hypothesis: 
 > vibration commands are sent in advertising packets. 
@@ -322,7 +322,7 @@ sudo apt install bluez
 ```
 Running our script requires root privileges.
 
-![alt](/assets/img/posts/lovespouse-ble-reverse/poc-control.png){: width="750" .center}
+![alt](/assets/img/posts/lovespouse-ble-reverse/poc-control.png){: width="850" .center}
 
 ## Conclusion
 
