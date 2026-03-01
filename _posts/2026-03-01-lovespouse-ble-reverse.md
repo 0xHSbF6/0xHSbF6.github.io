@@ -2,7 +2,7 @@
 title: LoveSpouse BLE Reverse
 date: 2026-03-01
 categories: [IoT]
-tags: [bluetooth, reverse-engineering, ble]
+tags: [bluetooth, reverse-engineering, BLE]
 ---
 
 # Lovespouse BLE reverse
@@ -11,9 +11,7 @@ tags: [bluetooth, reverse-engineering, ble]
 
 Most entry-level connected vibrators operate with the Love-Spouse application.
 
-<p style="text-align: center;">
-<img src="/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png" width="250" alt="">
-</p>
+![alt](/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png){: width="250" .center}
 
 The sex toy tested is the "Vibrating Egg Vibrator" from the brand "Kaiagame".
 The different vibration modes are manageable from a small Bluetooth remote control or from the Love Spouse application.
@@ -22,9 +20,7 @@ When powering on the vibrating egg to pair it with the mobile application, it is
 It is very common (though not mandatory) for devices to enter discoverable mode during pairing.
 Moreover, when attempting to pair the sex toy with the application, even though it is powered off, no error is displayed on the Android application and we can select a vibration mode despite it not being paired with the phone.
 
-<p style="text-align: center;">
-<img src="/assets/img/posts/lovespouse-ble-reverse/false-connection.png" width="250" alt="">
-</p>
+![alt](/assets/img/posts/lovespouse-ble-reverse/false-connection.png){: width="250" .center}
 
 This suggests that it's not necessary to pair the sex toy with the phone to control it.
 This repository will first analyze communications between the adult toy and the phone. In a second phase, we will replay the communications from a laptop running Debian 12.
@@ -48,26 +44,22 @@ adb install love-spouse-1-8-9.apk
 
 Press each of the vibration modes (9) and request a bugreport. This will contain Bluetooth logs that we will analyze.
 
-<p style="text-align: center;">
-<img src="/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png" width="250" alt="">
-</p>
+![alt](/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png){: width="250" .center}
 
-```sh
+```
 adb bugreport bugreport.zip
 ```
 
 
 **Extract Bluetooth logs**
 
-```sh
+```
 unzip bugreport.zip "*/btsnooz_hci.log"
 ```
 
 First, we open it with Wireshark. We can observe many advertising packets sent by our phone. These don't contain the usual information.
 
-<p style="text-align: center;">
-<img src="/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png" width="250" alt="">
-</p>
+![alt](/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png){: width="250" .center}
 
 We will formulate the following hypothesis: 
 > vibration commands are sent in advertising packets. 
@@ -94,13 +86,13 @@ tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2037"
 We have been retrieved 10 interesting packets. We pressed each mode, then pressed mode 10 twice to turn off the vibrating egg. Pressing one of the mode a second time sends a  turn off command.
 We can now display the raw content of packet number 1 and the second press on mode 10 to have a method to turn off the vibrator:
 
-```sh
+```
 tshark -r btsnooz_hci.log -Y "frame.number == 165" -x 
 0000  01 37 20 1a 00 03 01 16 02 01 01 0e ff ff 00 6d   .7 ............m
 0010  b6 43 ce 97 fe 42 7c e4 9c 6c 03 03 8f ae         .C...B|..l....
 ```
 
-```sh
+```
 tshark -r btsnooz_hci.log -Y "frame.number == 291" -x   
 0000  01 37 20 1a 00 03 01 16 02 01 01 0e ff ff 00 6d   .7 ............m
 0010  b6 43 ce 97 fe 42 7c e5 15 7d 03 03 8f ae         .C...B|..}....
@@ -113,7 +105,7 @@ To turn off the vibrator: `e5 15 7d`
 
 For the other modes, we have:
 
-```sh
+```
 1 - e4 9c 6c 
 2 - e7 07 5e 
 3 - e6 8e 4f 
@@ -132,11 +124,11 @@ For the other modes, we have:
 We can try to directly replay mode 1 with the `hcitool` command:
 
 Before if you haven't already done so. You must install bluez.
-```sh
+```
 sudo apt update
 sudo apt install bluez
 ```
-```sh
+```
 sudo hciconfig hci0 down
 sudo hciconfig hci0 up
 sudo hcitool -i hci0 cmd 0x08 0x0037 00 03 01 16 02 01 01 0e ff ff 00 6d b6 43 ce 97 fe 42 7c e4 9c 6c 03 03 8f ae
@@ -153,7 +145,7 @@ Two things are missing:
 
 To find this information, we can use opcode `0x2036` for general parameters:
 
-```sh
+```
 tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2036" 
   159   7.908910         host → controller   HCI_CMD 29 Sent LE Set Extended Advertising Parameters
   173   9.699031         host → controller   HCI_CMD 29 Sent LE Set Extended Advertising Parameters
@@ -173,7 +165,7 @@ Similarly for the last data packet (turn off) which was at frame `291` with a pa
 
 Let's now display the payload (which is always the same regardless of the selected packet):
 
-```sh
+```
 tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2036" -x
 0000  01 36 20 19 00 13 00 a0 00 00 d2 00 00 07 01 00   .6 .............
 0010  00 00 00 00 00 00 00 01 01 00 01 00 00            .............
@@ -183,7 +175,7 @@ tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2036" -x
 
 To find the device's MAC address, opcode `0x2035` will be useful:
 
-```sh
+```
 tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2035" -x
 0000  01 35 20 07 00 da ab e7 a4 7b 55                  .5 ......{U
 0000  01 35 20 07 00 a0 3c 30 e3 18 6a                  .5 ...<0..j
@@ -205,7 +197,7 @@ We now have everything needed to make our adult toy vibrate.
 
 In the final script, one last paquet has been added. It allows you to activate and send advertising from Bluez.
 
-```sh
+```
 sudo hciconfig hci0 down
 sudo hciconfig hci0 up
 sudo hcitool -i hci0 cmd 0x08 0x0036 00 13 00 a0 00 00 d2 00 00 07 01 00 00 00 00 00 00 00 00 01 01 00 01 00 00
@@ -219,13 +211,13 @@ Once these commands are sent, the vibrating egg starts vibrating on mode 1.
 **Final Payload - Turn Off the sex toy**
 
 In addition to the payload shutdown, we need to add the last packet sent after a sleep allows stopping advertising transmission
-```sh
+```
 sudo hcitool -i hci0 cmd 0x08 0x0039 00 00 00 00 00 00 00 00 00 00
 ```
 
 To turn off the device, we can send the following commands:
 
-```sh
+```
 sudo hcitool -i hci0 cmd 0x08 0x0037 00 03 01 16 02 01 01 0e ff ff 00 6d b6 43 ce 97 fe 42 7c e5 15 7d 03 03 8f ae
 sudo hcitool -i hci0 cmd 0x08 0x0039 01 01 00 00 00 00 00 00 00 00
 sleep 2
@@ -235,15 +227,13 @@ sudo hcitool -i hci0 cmd 0x08 0x0039 00 00 00 00 00 00 00 00 00 00
 ### Script final
 
 We need bluez to make our script work:
-```sh
+```
 sudo apt update
 sudo apt install bluez
 ```
 Running our script requires root privileges.
 
-<p style="text-align: center;">
-<img src="/assets/img/posts/lovespouse-ble-reverse/poc-control.png" width="250" alt="">
-</p>
+![alt](/assets/img/posts/lovespouse-ble-reverse/poc-control.png){: width="250" .center}
 
 ## Conclusion
 
