@@ -1,12 +1,18 @@
+---
+title: LoveSpouse BLE Reverse
+date: 2026-03-01
+categories: [IoT]
+tags: [bluetooth, reverse-engineering, ble]
+---
+
 # lovespouse-ble-reverse
 
 ## Context
 
 Most entry-level connected vibrators operate with the Love-Spouse application.
 <p align="center">
-<img src="/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png" width="250">
+<img src="/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png" width="250" alt="">
 </p>
-
 
 The sex toy tested is the "Vibrating Egg Vibrator" from the brand "Kaiagame".
 The different vibration modes are manageable from a small Bluetooth remote control or from the Love Spouse application.
@@ -16,7 +22,7 @@ It is very common (though not mandatory) for devices to enter discoverable mode 
 Moreover, when attempting to pair the sex toy with the application, even though it is powered off, no error is displayed on the Android application and we can select a vibration mode despite it not being paired with the phone.
 
 <p align="center">
-<img src="/assets/img/posts/lovespouse-ble-reverse/false-connection.png" width="250">
+<img src="/assets/img/posts/lovespouse-ble-reverse/false-connection.png" width="250" alt="">
 </p>
 
 This suggests that it's not necessary to pair the sex toy with the phone to control it.
@@ -42,7 +48,7 @@ adb install love-spouse-1-8-9.apk
 Press each of the vibration modes (9) and request a bugreport. This will contain Bluetooth logs that we will analyze.
 
 <p align="center">
-<img src="/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png" width="250">
+<img src="/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png" width="250" alt="">
 </p>
 
 ```sh
@@ -59,7 +65,7 @@ unzip bugreport.zip "*/btsnooz_hci.log"
 First, we open it with Wireshark. We can observe many advertising packets sent by our phone. These don't contain the usual information.
 
 <p align="center">
-<img src="/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png" width="800">
+<img src="/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png" width="800" alt="">
 </p>
 
 We will formulate the following hypothesis: 
@@ -235,7 +241,7 @@ sudo apt install bluez
 Running our script requires root privileges.
 
 <p align="center">
-<img src="/assets/img/posts/lovespouse-ble-reverse/poc-control.png" width="800">
+<img src="/assets/img/posts/lovespouse-ble-reverse/poc-control.png" width="800" alt="">
 </p>
 
 ## Conclusion
