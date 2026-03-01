@@ -9,7 +9,6 @@ tags: [bluetooth, reverse-engineering, BLE]
 
 ## Context
 
-
 Most entry-level connected vibrators operate with the Love-Spouse application.
 
 ![alt](/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png){: width="350" .center}
@@ -26,6 +25,7 @@ Moreover, when attempting to pair the sex toy with the application, even though 
 This suggests that it's not necessary to pair the sex toy with the phone to control it.
 This repository will first analyze communications between the adult toy and the phone. In a second phase, we will replay the communications from a laptop running Debian 12.
 
+---
 
 ## Bluetooth Communication Analysis
 
@@ -117,6 +117,8 @@ For the other modes, we have:
 8 - ed 5d f1 
 9 - ec d4 e0 
 ```
+
+---
 
 ## Replay Bluetooth Communications
 
@@ -323,6 +325,8 @@ sudo apt install bluez
 Running our script requires root privileges.
 
 ![alt](/assets/img/posts/lovespouse-ble-reverse/poc-control.png){: width="950" .center}
+
+---
 
 ## Conclusion
 
