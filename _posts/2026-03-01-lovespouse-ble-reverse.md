@@ -12,7 +12,7 @@ tags: [bluetooth, reverse-engineering, BLE]
 
 Most entry-level connected vibrators operate with the Love-Spouse application.
 
-![alt](/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png){: width="250" .center}
+![alt](/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png){: width="350" .center}
 
 The sex toy tested is the "Vibrating Egg Vibrator" from the brand "Kaiagame".
 The different vibration modes are manageable from a small Bluetooth remote control or from the Love Spouse application.
@@ -21,7 +21,7 @@ When powering on the vibrating egg to pair it with the mobile application, it is
 It is very common (though not mandatory) for devices to enter discoverable mode during pairing.
 Moreover, when attempting to pair the sex toy with the application, even though it is powered off, no error is displayed on the Android application and we can select a vibration mode despite it not being paired with the phone.
 
-![alt](/assets/img/posts/lovespouse-ble-reverse/false-connection.png){: width="250" .center}
+![alt](/assets/img/posts/lovespouse-ble-reverse/false-connection.png){: width="350" .center}
 
 This suggests that it's not necessary to pair the sex toy with the phone to control it.
 This repository will first analyze communications between the adult toy and the phone. In a second phase, we will replay the communications from a laptop running Debian 12.
@@ -45,7 +45,7 @@ adb install love-spouse-1-8-9.apk
 
 Press each of the vibration modes (9) and request a bugreport. This will contain Bluetooth logs that we will analyze.
 
-![alt](/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png){: width="250" .center}
+![alt](/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png){: width="350" .center}
 
 ```
 adb bugreport bugreport.zip
@@ -60,7 +60,7 @@ unzip bugreport.zip "*/btsnooz_hci.log"
 
 First, we open it with Wireshark. We can observe many advertising packets sent by our phone. These don't contain the usual information.
 
-![alt](/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png){: width="850" .center}
+![alt](/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png){: width="950" .center}
 
 We will formulate the following hypothesis: 
 > vibration commands are sent in advertising packets. 
@@ -322,7 +322,7 @@ sudo apt install bluez
 ```
 Running our script requires root privileges.
 
-![alt](/assets/img/posts/lovespouse-ble-reverse/poc-control.png){: width="850" .center}
+![alt](/assets/img/posts/lovespouse-ble-reverse/poc-control.png){: width="950" .center}
 
 ## Conclusion
 
