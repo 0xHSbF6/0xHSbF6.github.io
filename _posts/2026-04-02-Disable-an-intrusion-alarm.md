@@ -19,7 +19,7 @@ Avant d'aller plus loin, un petit rappel légal :
 
 S'introduire dans un système informatique de traitement de données automatisé sans l'autorisation du propriétaire est illégal.
 
-![alt text](/assets/img/posts/neutraliser-camera/article_321-3.png)
+![alt text](/assets/img/posts/neutraliser-alarme/article_321-3.png)
 
 Ceci s'applique quel que soit le mobile et quel que soit le système. Les démonstrations présentées ici ont été réalisées sur du matériel dont je suis le propriétaire.
 
@@ -29,7 +29,7 @@ Ne reproduisez pas ces opérations sans une autorisation écrite du propriétair
 
 La quasi-totalité des alarmes sans fil pour particuliers reposent sur le même modèle :
 
-![alt text](/assets/img/posts/neutraliser-camera/schema-alarme-fonctionnement.png)
+![alt text](/assets/img/posts/neutraliser-alarme/schema-alarme-fonctionnement.png)
 
 Le principe est simple. Lorsqu'un capteur de présence détecte un mouvement ou qu'un capteur d'ouverture détecte une porte ou fenêtre ouverte, un signal radio est envoyé à la passerelle (centrale).
 
