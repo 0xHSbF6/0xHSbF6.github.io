@@ -21,7 +21,7 @@ Avant d'aller plus loin un petit rappel légal:
 
 S'introduire dans un système informatique de traitement de données automatisé sans l'autorisation du propriétaire est illégal.
 
-![alt text](/assets/img/posts/neutraliser-camera/article_321-3.png)
+![alt text](/assets/img/posts/neutraliser-camera/article_321-3.png){: width="1000" .center}
 
 Ceci s'applique quel que soit le mobile et quel que soit le système. Les démonstrations présentées ici ont été réalisées sur du matériel dont je suis le propriétaire. 
 
@@ -48,7 +48,7 @@ sudo airmon-ng start wlan0
 sudo airodump-ng wlan0mon
 ```
 
-![alt text](/assets/img/posts/neutraliser-camera/list-AP.png)
+![alt text](/assets/img/posts/neutraliser-camera/list-AP.png){: width="1000" .center}
 
 Le réseau cible apparaît dans la liste. Récupérons le BSSID et le canal de communication 
 
@@ -60,7 +60,7 @@ Nous pouvons maintenant lister les équipements connectés à ce point d'accès 
 sudo airodump-ng --bssid <BSSID_CIBLE> --channel <CH> wlan0mon
 ```
 
-![alt text](/assets/img/posts/neutraliser-camera/station-connected.png)
+![alt text](/assets/img/posts/neutraliser-camera/station-connected.png){: width="1000" .center}
 
 Cela permet d'identifier deux stations
 
@@ -84,7 +84,7 @@ Maintenant qu'on sait que l'adresse MAC n'est pas randomisée. On peut trouver d
 
 https://macaddresslookup.io/fr?search=1C-4D-89
 
-![alt text](/assets/img/posts/neutraliser-camera/adress-lockup.png)
+![alt text](/assets/img/posts/neutraliser-camera/adress-lockup.png){: width="1000" .center}
 
 Si l'OUI renvoyait vers un fabricant généraliste comme TP-Link (Tapo), qui commercialise aussi des prises connectées et des routeurs, le constructeur seul ne suffirait pas à conclure. 
 
@@ -92,7 +92,7 @@ Afin de nous assurer qu'il s'agisse bien d'une caméra, nous allons analyser la 
 
 **Analyse du volume de trames**
 
-![alt text](/assets/img/posts/neutraliser-camera/statistiques-network.png)
+![alt text](/assets/img/posts/neutraliser-camera/statistiques-network.png){: width="1000" .center}
 
 Une caméra de surveillance qui envoie en continu un flux de vidéo enverra un nombre très important de paquets. En revanche un aspirateur robot ou une ampoule connectée enverra ou recevra beaucoup moins de paquets.
 
