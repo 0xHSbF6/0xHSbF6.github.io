@@ -19,7 +19,7 @@ Avant d'aller plus loin, un petit rappel légal :
 
 S'introduire dans un système informatique de traitement de données automatisé sans l'autorisation du propriétaire est illégal.
 
-![alt text](/assets/img/posts/neutraliser-alarme/article_321-3.png){: width="1000" .center}
+![alt text](/assets/img/posts/neutraliser-alarme/article_321-3.png){: width="1100" .center}
 
 Ceci s'applique quel que soit le mobile et quel que soit le système. Les démonstrations présentées ici ont été réalisées sur du matériel dont je suis le propriétaire.
 
@@ -76,7 +76,7 @@ Par exemple, si votre implant était un Flipper Zero, voici un exemple de trame 
 
 Nous pouvons voir tous les détails sur les signaux interceptés.
 
-![alt text](/assets/img/posts/neutraliser-alarme/enable_alarm.png){: width="750" .center}
+![alt text](/assets/img/posts/neutraliser-alarme/enable_alarm.png){: width="450" .center}
 
 La difficulté réside dans le placement de l'implant à proximité de l'alarme, à portée des capteurs. Le choix de la cachette est laissé à votre imagination.
 
@@ -127,7 +127,7 @@ Attention, les stations météo pour particulier émettent souvent sur la même 
 
 **Signal d'une station météo**
 
-![alt text](/assets/img/posts/neutraliser-alarme/temperature_sensor.png){: width="150" .center}
+![alt text](/assets/img/posts/neutraliser-alarme/temperature_sensor.png){: width="450" .center}
 
 Pour plus de détail, je vous renvoi vers mon article sur le reverse et l'analyse des communications radios sur la bande ISF 433MHz. 
 
@@ -165,7 +165,7 @@ L'attaque par replay pour désarmer l'alarme fonctionne, mais il présente deux 
 - le propriétaire reçoit une notification indiquant que son alarme a été désarmée.
 - le désarmement apparaît dans les logs de l'application mobile. 
 
-![alt text](/assets/img/posts/neutraliser-alarme/log-alarme.png)
+![alt text](/assets/img/posts/neutraliser-alarme/log-alarme.png){: width="950" .center}
 
 D'où l'intérêt de neutraliser l'alarme sans la désarmer : en empêchant les capteurs de communiquer avec la centrale.
 
