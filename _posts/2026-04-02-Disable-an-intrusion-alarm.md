@@ -19,7 +19,7 @@ Avant d'aller plus loin, un petit rappel légal :
 
 S'introduire dans un système informatique de traitement de données automatisé sans l'autorisation du propriétaire est illégal.
 
-![alt text](/assets/img/posts/neutraliser-alarme/article_321-3.png){: width="1000" .center}
+![alt text](/assets/img/posts/neutraliser-alarme/article_321-3.png){: width="950" .center}
 
 Ceci s'applique quel que soit le mobile et quel que soit le système. Les démonstrations présentées ici ont été réalisées sur du matériel dont je suis le propriétaire.
 
@@ -29,7 +29,7 @@ Ne reproduisez pas ces opérations sans une autorisation écrite du propriétair
 
 La quasi-totalité des alarmes sans fil pour particuliers reposent sur le même modèle :
 
-![alt text](/assets/img/posts/neutraliser-alarme/schema-alarme-fonctionnement.png){: width="1000" .center}
+![alt text](/assets/img/posts/neutraliser-alarme/schema-alarme-fonctionnement.png){: width="950" .center}
 
 Le principe est simple. Lorsqu'un capteur de présence détecte un mouvement ou qu'un capteur d'ouverture détecte une porte ou fenêtre ouverte, un signal radio est envoyé à la passerelle (centrale).
 
@@ -68,7 +68,7 @@ Encore plus simple, utilisons le pingouin préféré des hackers. C'est un petit
 
 Inconvénient : la portée est limitée à environ 5 mètres sur 433 MHz.
 
-![alt text](/assets/img/posts/neutraliser-alarme/implants.png){: width="1000" .center}
+![alt text](/assets/img/posts/neutraliser-alarme/implants.png){: width="950" .center}
 
 Après quelques jours d'analyse, nous récupérons notre implant afin d'analyser les signaux qu'il a interceptés.
 
@@ -191,7 +191,7 @@ Le brouillage n'est pas toujours efficace. Pour brouiller de manière fiable, il
 
 De plus, le spectre d'un brouilleur est très caractéristique et facilement détectable par un équipement de surveillance radio.
 
-![alt text](/assets/img/posts/neutraliser-alarme/jamming-spectre.png){: width="1000" .center}
+![alt text](/assets/img/posts/neutraliser-alarme/jamming-spectre.png){: width="950" .center}
 
 Ici la fréquence 433,92MHz est totalement saturé.
 
