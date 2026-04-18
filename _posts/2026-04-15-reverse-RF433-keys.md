@@ -1,11 +1,11 @@
 ---
-title: Reverse engineering télécommande RF433
+title: Reverse engineering télécommandes RF433
 date: 2026-04-02
 categories: [IoT]
 tags: [IoT, Home Automation, Radio Frequency]
 ---
 
-# Reverse engineering télécommande RF433
+# Reverse engineering télécommandes RF433
 
 ## Introduction
 
@@ -69,11 +69,11 @@ URH nous permet d'extraire du signal radio les bits du signal envoyé par la té
 
 Voici la photo du PCB de cette télécommande.
 
-![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/pcb-telecommande1.png){: width="950" .center}
+![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/pcb-telecommande1.png){: width="450" .center}
 
 En ouvrant le PCB de la télécommande, nous pouvons récupérer le nom du CI qui gère l'encodage des signaux radio. On peut lire `STC1527`. Une rapide recherche sur internet nous amène sur la datasheet du CI http://www.sc-tech.cn/en/SCT1527.pdf
 
-![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/sct1527-datasheet-1.png){: width="950" .center}
+![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/sct1527-datasheet-1.png){: width="900" .center}
 
 Le décodage est assez facile et peut se faire à la main. Grâce à la datasheet, nous savons que :
 
@@ -82,7 +82,7 @@ Le décodage est assez facile et peut se faire à la main. Grâce à la datashee
 1 = H = 1110
 ```
 
-![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/sct1527-datasheet-2.png){: width="950" .center}
+![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/sct1527-datasheet-2.png){: width="900" .center}
 
 Analysons le signal. Celui-ci est répété 14 fois quand on appuie sur le bouton. De cette manière, même s'il y a une interférence au moment de l'appui, le signal sera quand même compréhensible par le récepteur.
 
@@ -123,7 +123,7 @@ Si nous avons configuré notre alarme pour l'activer à partir du bouton 1 `1C2D
 
 Vous pouvez aussi le décoder automoatiquement avec le flipper zéro mais c'est moins drôle.
 
-![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/flipper-1C2DA8.png){: width="950" .center}
+![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/flipper-1C2DA8.png){: width="450" .center}
 
 Bonne nouvelle, nous retrouvons les mêmes valeurs que lors de notre analyse manuelle. 
 
@@ -316,7 +316,7 @@ L'attaque rolljam qui permet sur le papier de récupérer un code valide. Dans l
 
 Même si le rolling code est intéressant, il n'est pas toujours bien implémenté ce qui permet de l'attaquer sans avoir besoin de faire une attaque rolljam
 
-![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/setup-analyse.png){: width="950" .center}
+![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/setup-analyse.png){: width="850" .center}
 
 Ceci est un récepteur que j'ai testé qui permet une attaque par rejeu à cause d'une faille dans la réassociation de la clef... 
 
@@ -347,17 +347,17 @@ Si nous appuyons 3 fois sur le même bouton, on observe 3 signaux différents :
 
 Nous allons suivre le même protocole de reverse que précédemment et analyser, dans un premier temps, le PCB
 
-![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/pcb-hcs300.png){: width="950" .center}
+![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/pcb-hcs300.png){: width="450" .center}
 
 On peut lire sur le CI principal le code `HCS300`. La datasheet est facilement trouvable en ligne et nous fournit les informations nécessaires pour décoder le signal.
 
-![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/hcs300-datasheet.png){: width="950" .center}
+![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/hcs300-datasheet.png){: width="700" .center}
 
 Le signal utilise un encodage PWM où chaque bit est représenté par un rapport cyclique différent.
 
 La datasheet nous donne également le mapping des champs :
 
-![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/reverse-hcs300.png){: width="950" .center}
+![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/reverse-hcs300.png){: width="850" .center}
 
 Le mot de `66 bits` est transmis LSB en premier. Dans l'ordre de réception :
 
