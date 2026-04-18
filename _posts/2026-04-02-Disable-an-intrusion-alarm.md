@@ -127,7 +127,7 @@ Attention, les stations météo pour particulier émettent souvent sur la même 
 
 **Signal d'une station météo**
 
-![alt text](/assets/img/posts/neutraliser-alarme/temperature_sensor.png){: width="750" .center}
+![alt text](/assets/img/posts/neutraliser-alarme/temperature_sensor.png){: width="150" .center}
 
 Pour plus de détail, je vous renvoi vers mon article sur le reverse et l'analyse des communications radios sur la bande ISF 433MHz. 
 
