@@ -11,7 +11,7 @@ tags: [IoT, NFC, Home Automation]
 
 Votre collègue Toto a installé chez lui une serrure connectée de ce type, achetée à bas coût sur Internet. Votre mission est de vous introduire chez lui.
 
-![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/badge-serrure.png)
+![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/badge-serrure.png){: width="450" .center}
 
 La serrure s'ouvre de 5 manières :
 - code
@@ -34,9 +34,9 @@ Au vu des photos de mon lab de serrure connectée, vous devriez le comprendre ai
 
 Dans notre scénario, Toto a laissé traîner ses clefs. Vous n'avez pas d'équipement de type Flipper Zero ou Proxmark. En revanche, vous avez votre téléphone dans la poche. En utilisant l'application NFC Tools, vous scannez le badge et obtenez les informations suivantes :
 
-![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/badge-table.png)
+![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/badge-table.png){: width="1100" .center}
 
-![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/nfc-tool.png)
+![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/nfc-tool.png){: width="450" .center}
 
 On y retrouve :
 
@@ -66,7 +66,7 @@ si Toto s'éloigne quelques secondes de son bureau ET que vous avez juste votre 
 
 Maintenant que vous avez les informations du badge sur votre téléphone, vous pouvez tranquillement créer un clone en utilisant un Proxmark3.
 
-![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/proxmark.png)
+![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/proxmark.png){: width="1100" .center}
 
 J'utilise ici une Magic Card. Contrairement à une carte Mifare Classic légitime dont le bloc 0 (contenant le numéro de série) est verrouillé en écriture en usine, une Magic Card permet de modifier librement ce numéro de série.
 
@@ -82,13 +82,13 @@ Puis vérifier les informations de la carte avec :
 hf mf info
 ```
 
-![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/pm3-info.png)
+![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/pm3-info.png){: width="1100" .center}
 
 On constate que l'UID, l'ATQA et le SAK correspondent bien à ceux du badge original. Comme on l'a vu plus tôt, pas besoin de modifier le contenu des autres secteurs de la carte car notre serrure ne les vérifie pas.
 
 On peut aussi utiliser le Flipper Zero en saisissant directement l'UID en hexadécimal dans le menu NFC :
 
-![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/emulate-card-flipper.png)
+![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/emulate-card-flipper.png){: width="1100" .center}
 
 ## Étape 3 : Ouvrir la porte
 
@@ -96,11 +96,11 @@ Maintenant que vous avez créé votre carte clone, vous pouvez l'utiliser pour o
 
 Avec la carte UID clonée :
 
-![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/open-door-card.png)
+![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/open-door-card.png){: width="1100" .center}
 
 Avec le Flipper Zero en mode émulation :
 
-![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/open-door-flipper.png)
+![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/open-door-flipper.png){: width="1100" .center}
 
 Les deux méthodes fonctionnent : que ce soit en présentant la carte physique clonée ou en utilisant le Flipper Zero qui émule le badge, la serrure s'ouvre.
 
