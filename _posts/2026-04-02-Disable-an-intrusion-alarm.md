@@ -215,7 +215,7 @@ Dans la réalité, cette attaque est complexe à mettre en œuvre car il faut sy
 
 Cependant, le rolling code n'est pas toujours bien implémenté... Et quand ce n'est pas le cas, il peut se contourner... on en reparlera dans un prochain article...
 
-## Communication multi-canal / saut de fréquence (FHSS)
+### Communication multi-canal / saut de fréquence (FHSS)
 
 Certaines alarmes haut de gamme (Ajax ou certains modèles Daitem) communiquent sur plusieurs canaux dans la bande 868 MHz, en sautant de fréquence à chaque transmission (FHSS — Frequency Hopping Spread Spectrum).
 
