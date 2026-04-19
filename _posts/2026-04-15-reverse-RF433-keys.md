@@ -171,7 +171,7 @@ Appuyons sur start. Le flipper zéro sera l'arbitre et affichera le signal.
 
 Techniquement, le signal est bon et face à un vrai récepteur radio, la porte de garage s'ouvrirait. A défaut, il faudra aussi encoder le signal 1C2DA2 et 1C2DA1.
 
-## B - Faille combinatoire — Serrure connectée RF433
+## B - Télécommande RF433 vulnérable
 
 On va maintenant reverser le signal emis par une serrure connectée vulnérable disponible sur Amazon sous différentes marques (rebranding)
 
