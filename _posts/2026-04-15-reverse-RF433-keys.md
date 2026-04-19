@@ -48,7 +48,7 @@ Outil de décodage automatique de signaux RF 433 MHz. Supporte des centaines de 
 
 https://github.com/merbanan/rtl_433
 
-## A - Reverser télécommande RF433 classique
+## A - Télécommande RF433 classique
 
 ### Reverse
 
@@ -171,7 +171,7 @@ Appuyons sur start. Le flipper zéro sera l'arbitre et affichera le signal.
 
 Techniquement, le signal est bon et face à un vrai récepteur radio, la porte de garage s'ouvrirait. A défaut, il faudra aussi encoder le signal 1C2DA2 et 1C2DA1.
 
-## Faille combinatoire — Serrure connectée RF433
+## B - Faille combinatoire — Serrure connectée RF433
 
 On va maintenant reverser le signal emis par une serrure connectée vulnérable disponible sur Amazon sous différentes marques (rebranding)
 
@@ -294,7 +294,11 @@ par exemple:
 
 Ceci est vrai quelque soit le device_id. 
 
-## Introduction au rolling code
+
+## C - Clef RF433 Rolling code
+
+### Introduction au rolling
+
 
 Nous allons maintenant analyser une seconde clef avec du rolling code qui fonctionne elle aussi sur 433 MHz. Elle est censée être plus sécurisée que les précédentes.
 
@@ -326,7 +330,7 @@ La réassociation se fait très bien quand le compteur de la télécommande est 
 
 Je dis ça je dis rien...
 
-## B - Clef RF433 Rolling code
+### Reverse cle RF433 Keeloq
 
 On peut voir que le signal est envoyé plusieurs fois, toujours pour la même raison : garantir la réception même en cas d'interférence.
 
