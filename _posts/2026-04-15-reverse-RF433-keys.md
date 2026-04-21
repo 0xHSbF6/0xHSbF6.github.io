@@ -41,13 +41,13 @@ Récepteur uniquement. Peu coûteux (~40€). Doit être relié à un PC. Peut a
 - 
 Permet de visualiser, analyser et décoder des signaux radio capturés. 
 
-https://github.com/jopohl/urh
+<a href="https://github.com/jopohl/urh">Universal Radio Hacker</a>
 
 - **rtl_433** 
 
 Outil de décodage automatique de signaux `RF 433 MHz`. Supporte des centaines de protocoles et permet d'identifier rapidement l'encodage utilisé.
 
-https://github.com/merbanan/rtl_433
+<a href="https://github.com/merbanan/rtl_433">rtl_433 </a>
 
 ## A - Télécommande RF433 classique
 
@@ -324,7 +324,7 @@ La clé de chiffrement de chaque télécommande (`device key`) est dérivée en 
 
 Bien évidemmeent des clés ont fabricant plusieurs fois vu leur clé leaker, ce qui permet de déchiffrer les trames de tous les appareils de la marque concernée.
 
-https://www.youtube.com/watch?v=Zr_NCoSH2cg
+<a href="https://www.youtube.com/watch?v=Zr_NCoSH2cg">Unlocking KeeLoq: A Reverse Engineering Story - Rogan Dawes</a>
 
 L'attaque `rolljam` qui permet sur le papier de récupérer un code valide. Dans les faits sauf si c'est un fake Tiktok ou que vous avez les planètes alignées. Cette attaque est difficile à réaliser dans la pratique. 
 

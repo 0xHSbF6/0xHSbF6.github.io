@@ -77,13 +77,13 @@ crontab -e
 
 A chaque nouvel signal détecté sur la fréquence `433,92`, rtl_433 le sauvegardera dans un nouveau fichier
 
-![alt text](/assets/img/posts/neutraliser-alarme/urh-signal.png){: width="950" .center}
+![alt text](/assets/img/posts/neutraliser-alarme/saving-image-rtl_433.png){: width="950" .center}
 
 Il faudra ensuite décoder les signaux. Pour cela, je vous envoi vers mon article sur le reverse de clef RF433.
 
-![alt text](/assets/img/posts/neutraliser-alarme/saving-image-rtl_433.png){: width="950" .center}
+![alt text](/assets/img/posts/neutraliser-alarme/urh-signal.png){: width="950" .center}
 
-> https://0xhsbf6.github.io/posts/reverse-RF433-keys/
+<a href="https://0xhsbf6.github.io/posts/reverse-RF433-keys/">Reverse de télécommande RF433</a>
 
 **Flipper Zero**
 
@@ -97,7 +97,7 @@ Après quelques jours d'analyse, nous récupérons notre implant afin d'analyser
 
 Par exemple, si votre implant était un Flipper Zero, voici un exemple de trame que vous verrez :
 
-<video controls width="100%">
+<video controls width="400">
   <source src="/assets/vid/neutraliser-alarme/flipper-zero-implant.webm" type="video/mp4">
 </video>
 
@@ -109,7 +109,7 @@ Attention avec le flipper zéro en utilisant le mode Read, le signal n'est pas d
 
 Heureseument, il est assez facile de créer un signal valide à partir des élements que nous avons récolté et l'article que j'ai écris sur le reverse de télécommande 433MHz. 
 
-> https://0xhsbf6.github.io/posts/reverse-RF433-keys/
+<a href="https://0xhsbf6.github.io/posts/reverse-RF433-keys/">Reverse de télécommande RF433</a>
 
 D'une manière générale, la difficulté des implants réside dans le placement de celui-ci à proximité de l'alarme, des capteurs. Sans que celui-ci ne soit trouvé par votre target. Le choix de la cachette est laissé à votre imagination.
 
