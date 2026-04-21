@@ -33,7 +33,7 @@ This repository will first analyze communications between the adult toy and the 
 To analyze Bluetooth communications between my vibrator, we will download the Love Spouse application APK and use it on an AVD (Android Virtual Device).
 We can download the APK from the Uptodown website:
 
-<a href="https://love-spouse.en.uptodown.com/android">LoveSpouse Download</a>
+<a href="https://love-spouse.en.uptodown.com/android">https://love-spouse.en.uptodown.com/android</a>
 
 Note that the tested version is `1.8.9`.
 
