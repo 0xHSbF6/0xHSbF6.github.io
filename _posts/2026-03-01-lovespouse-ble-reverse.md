@@ -9,7 +9,8 @@ tags: [bluetooth, reverse-engineering, BLE, IoT]
 
 ## Context
 
-Most entry-level connected vibrators operate with the Love-Spouse application.
+Most entry-level and mid-range sex toys are vulnerable to unauthenticated Bluetooth packet injection attacks. 
+The reverse engineering of Bluetooth communications between the LoveSpouse mobile app and the vibrator will be the main focus of this article.
 
 ![alt](/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png){: width="400" .center}
 

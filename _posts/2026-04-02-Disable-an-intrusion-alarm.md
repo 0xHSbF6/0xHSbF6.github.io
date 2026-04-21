@@ -9,7 +9,7 @@ tags: [IoT, Home Automation, Radio Frequency]
 
 ## Introduction
 
-Cet article cible les alarmes anti-intrusion sans fil pour particuliers, de l'entrée de gamme à la moyenne gamme, qui communiquent sur la bande ISM 433 MHz.
+Cet article cible les alarmes anti-intrusion sans fil pour particuliers, de l'entrée de gamme à la moyenne gamme, qui communiquent sur la bande `ISM 433 MHz`.
 
 Les deux attaques présentées (replay et jamming) fonctionnent sur la majorité de ces systèmes. Les alarmes haut de gamme intègrent des contre-mesures (rolling code, saut de fréquence, détection de brouillage) qui rendent ces attaques plus difficiles, sans pour autant les rendre impossibles.
 
@@ -44,14 +44,14 @@ Les technologies de communication entre périphériques et centrale varient :
 - Zigbee
 - Bluetooth
 
-Nous nous concentrons ici sur le 433 MHz, la technologie la plus répandue dans le segment grand public et celle qui présente le plus de vulnérabilités.
+Nous nous concentrons ici sur le `433 MHz`, la technologie la plus répandue dans le segment grand public et celle qui présente le plus de vulnérabilités.
 
 ## Repérer une alarme anti-intrusion
 
-Il est relativement simple de repérer une alarme 433 MHz. Il suffit de placer un récepteur radio à proximité du domicile et d'observer le spectre pendant un à deux jours. Si une alarme est présente, de nombreux signaux apparaîtront aux moments où les habitants sont actifs.
+Il est relativement simple de repérer une alarme `433 MHz`. Il suffit de placer un récepteur radio à proximité du domicile et d'observer le spectre pendant un à deux jours. Si une alarme est présente, de nombreux signaux apparaîtront aux moments où les habitants sont actifs.
 
 ### Implant de surveillance
-La bande 433 MHz ne nécessite que peu de matériel pour être analysée. Deux options :
+La bande `433 MHz` ne nécessite que peu de matériel pour être analysée. Deux options :
 
 - SDR + Raspberry Pi
 - Flipper Zero
@@ -64,9 +64,9 @@ Cet implant a une portée d'environ 10 à 15 mètres selon l'antenne, ce qui est
 
 **Flipper Zero**
 
-Encore plus simple, utilisons le pingouin préféré des hackers. C'est un petit couteau suisse qui dépanne bien. Par rapport au système précédent, il est plus compact et son autonomie est très bonne, sans avoir besoin d'une batterie externe.
+Encore plus simple, utilisons le pingouin préféré des hackers (lol). C'est un petit couteau suisse qui dépanne bien. Par rapport au système précédent, il est plus compact et son autonomie est très bonne, sans avoir besoin d'une batterie externe.
 
-Inconvénient : la portée est limitée à environ 5 mètres sur 433 MHz.
+Inconvénient : la portée est limitée à environ 5 mètres sur `433 MHz`.
 
 ![alt text](/assets/img/posts/neutraliser-alarme/implants.png){: width="950" .center}
 
@@ -86,11 +86,11 @@ Grâce à notre implant, nous pouvons cartographier l'ensemble des équipements 
 
 Avec tout ces indicateurs, il est très souvent possible avec un peu de déduction de faire une cartographie passive du système d'alarme de notre target. 
 
-**Capteurs de présence**
+**- Capteurs de présence**
 
 Lorsque les habitants sont chez eux et ne sont pas en train de dormir, le signal du capteur de présence est émis fréquemment. En l'absence de rolling code, ce signal est identique à chaque émission et non chiffré.
 
-**Télécommande / clavier déporté**
+**- Télécommande / clavier déporté**
 
 Un autre signal apparaît seulement une à deux fois par jour, aux heures de départ et d'arrivée des habitants c'est le signal d'armement ou de désarmement de l'alarme.
 
@@ -98,11 +98,11 @@ Les signaux d'armement et de désarmement se ressemblent fortement, à un ou deu
 
 Quand vous tapez votre code sur un clavier déporté, le clavier vérifie si le code est correct. Si c'est le cas, il envoie un signal de la même forme à la centrale. Quand vous activez votre alarme, le fonctionnement est identique. Un clavier déporté est donc une sorte de télécommande.
 
-**Capteurs de porte**
+**- Capteurs de porte**
 
 Le capteur de porte sera activé systématiquement juste avant ou après le signal de télécommande. On active par exemple l'alarme et on sort de la maison (armement d'alarme puis capteur de porte) ou inversement quand vous rentrez chez vous et que vous désarmer votre alarme sur votre clavier déporté (après avoir ouvert votre porte).
 
-**Capteurs de fenêtre**
+**- Capteurs de fenêtre**
 
 Les capteurs de fenêtre sont plus aléatoires et peuvent ne pas apparaître du tout pendant la durée de la capture. Tout le monde n'ouvre pas ses fenêtres tous jours et encore moins à la même heure.
 
@@ -129,7 +129,7 @@ Attention, les stations météo pour particulier émettent souvent sur la même 
 
 ![alt text](/assets/img/posts/neutraliser-alarme/temperature_sensor.png){: width="400" .center}
 
-Pour plus de détail, je vous renvoi vers mon article sur le reverse et l'analyse des communications radios sur la bande ISF 433MHz. 
+Pour plus de détail, je vous renvoi vers mon article sur le reverse et l'analyse des communications radios sur la bande `ISF 433 MHz`. 
 
 ## Attaque 1: Replay 
 
@@ -171,11 +171,11 @@ D'où l'intérêt de neutraliser l'alarme sans la désarmer : en empêchant les 
 
 ### Principe 
 
-Le brouillage consiste à émettre des interférences sur la fréquence 433 MHz afin de noyer les signaux des capteurs. La centrale ne reçoit plus les signaux d'intrusion (capteur de présence, capteur de porte), l'alarme ne se déclenche pas, et rien n'apparaît dans les logs.
+Le brouillage consiste à émettre des interférences sur la fréquence `433 MHz` afin de noyer les signaux des capteurs. La centrale ne reçoit plus les signaux d'intrusion (capteur de présence, capteur de porte), l'alarme ne se déclenche pas, et rien n'apparaît dans les logs.
 
 ### Mise en œuvre
 
-Le HackRF émet un signal parasite sur 433 MHz. La centrale reçoit plus de bruit que de signaux légitimes : les signaux des capteurs sont noyés dans la masse.
+Le HackRF émet un signal parasite sur `433 MHz`. La centrale reçoit plus de bruit que de signaux légitimes : les signaux des capteurs sont noyés dans la masse.
 
 <!-- screenshot du spectre montrant le signal brouillé -->
 
@@ -193,7 +193,7 @@ De plus, le spectre d'un brouilleur est très caractéristique et facilement dé
 
 ![alt text](/assets/img/posts/neutraliser-alarme/jamming-spectre.png){: width="950" .center}
 
-Ici la fréquence 433,92MHz est totalement saturé.
+Ici la fréquence `433,92 MHz` est totalement saturé.
 
 Rappel : l'utilisation ET la détention d'un brouilleur sont illégales en France.
 
@@ -217,7 +217,7 @@ Cependant, le rolling code n'est pas toujours bien implémenté... Et quand ce n
 
 ### Communication multi-canal / saut de fréquence (FHSS)
 
-Certaines alarmes haut de gamme (Ajax ou certains modèles Daitem) communiquent sur plusieurs canaux dans la bande 868 MHz, en sautant de fréquence à chaque transmission (FHSS — Frequency Hopping Spread Spectrum).
+Certaines alarmes haut de gamme (`Ajax` ou certains modèles `Daitem`) communiquent sur plusieurs canaux dans la bande 868 MHz, en sautant de fréquence à chaque transmission (`FHSS` — Frequency Hopping Spread Spectrum).
 
 Cette approche rend l'interception des signaux plus complexe car il faut capturer simultanément sur tous les canaux possibles.
 
@@ -237,7 +237,7 @@ Mais cela demande une installation beaucoup plus compliqué en raison des cable 
 
 ## Conclusion
 
-Les vulnérabilités présentées ne sont pas spécifiques à une marque. Elles sont structurelles à la majorité des alarmes d'entrée de gamme qui communiquent en 433 MHz.
+Les vulnérabilités présentées ne sont pas spécifiques à une marque. Elles sont structurelles à la majorité des alarmes d'entrée de gamme qui communiquent en `433 MHz`.
 
 Il n'existe pas de solution 100 % efficace contre un attaquant. Cependant, une alarme, même imparfaite, combinée à un panneau d'avertissement visible dissuadera la majorité des tentatives.
 
