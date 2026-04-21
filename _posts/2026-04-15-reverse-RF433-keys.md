@@ -436,6 +436,3 @@ Le `serial number` reste identique :
 ```
 
 Dans les 3 cas c'est le même bouton qui est appuyé donc `1011`
-
-
-

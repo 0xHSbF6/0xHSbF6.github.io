@@ -56,11 +56,34 @@ La bande `433 MHz` ne nécessite que peu de matériel pour être analysée. Deux
 - SDR + Raspberry Pi
 - Flipper Zero
 
+![alt text](/assets/img/posts/neutraliser-alarme/implants.png){: width="950" .center}
+
 **SDR + Raspberry Pi**
 
-Une SDR (Software Defined Radio) est un récepteur radio piloté par logiciel. Dans ce cas, cette SDR (NRT NESDR Smart) fait uniquement récepteur. Elle coûte environ 50 euros. Si vous avez besoin d'un récepteur et d'un émetteur, le HackRF répondra à votre besoin mais coûtera un peu plus cher (600 euros).
+Une `SDR` (Software Defined Radio) est un récepteur radio piloté par logiciel. Dans ce cas, cette `SDR` (`NESDR Smart`) fait uniquement récepteur. Elle coûte environ 50 euros. Si vous avez besoin d'un récepteur et d'un émetteur, le HackRF répondra à votre besoin mais coûtera un peu plus cher (600 euros).
 
 Cet implant a une portée d'environ 10 à 15 mètres selon l'antenne, ce qui est souvent bien suffisant si vous positionnez l'implant dans un jardin à proximité de la maison.
+
+Il faudra tout de même penser à relier l'implant à une batterie externe pour l'alimenter
+
+Sur la raspberry pi. Il vous suffit juste d'installer rtl_433 disponible sur github ou peu même s'installer avec la commande `sudo apt install rtl-433`
+
+Puis de lancer un cron au démarrage de la raspberry pi pour qui aura pour mission de lancer `rtl_433`
+
+```
+crontab -e
+@reboot sleep 300 && /usr/bin/rtl_433 -f 433920000 -S all
+```
+
+A chaque nouvel signal détecté sur la fréquence `433,92`, rtl_433 le sauvegardera dans un nouveau fichier
+
+![alt text](/assets/img/posts/neutraliser-alarme/urh-signal.png){: width="950" .center}
+
+Il faudra ensuite décoder les signaux. Pour cela, je vous envoi vers mon article sur le reverse de clef RF433.
+
+![alt text](/assets/img/posts/neutraliser-alarme/saving-image-rtl_433.png){: width="950" .center}
+
+> https://0xhsbf6.github.io/posts/reverse-RF433-keys/
 
 **Flipper Zero**
 
@@ -68,17 +91,27 @@ Encore plus simple, utilisons le pingouin préféré des hackers (lol). C'est un
 
 Inconvénient : la portée est limitée à environ 5 mètres sur `433 MHz`.
 
-![alt text](/assets/img/posts/neutraliser-alarme/implants.png){: width="950" .center}
+**Analyse des résultats**
 
 Après quelques jours d'analyse, nous récupérons notre implant afin d'analyser les signaux qu'il a interceptés.
 
 Par exemple, si votre implant était un Flipper Zero, voici un exemple de trame que vous verrez :
 
+<video controls width="100%">
+  <source src="/assets/vid/neutraliser-alarme/flipper-zero-implant.webm" type="video/mp4">
+</video>
+
 Nous pouvons voir tous les détails sur les signaux interceptés.
 
 ![alt text](/assets/img/posts/neutraliser-alarme/enable_alarm.png){: width="400" .center}
 
-La difficulté réside dans le placement de l'implant à proximité de l'alarme, à portée des capteurs. Le choix de la cachette est laissé à votre imagination.
+Attention avec le flipper zéro en utilisant le mode Read, le signal n'est pas directement utilisable pour une attaque par replay contrairement au signaux que nous avons capturé avec notre SDR. C'est pour cette raison que je préfère la SDR pour faire un implant. 
+
+Heureseument, il est assez facile de créer un signal valide à partir des élements que nous avons récolté et l'article que j'ai écris sur le reverse de télécommande 433MHz. 
+
+> https://0xhsbf6.github.io/posts/reverse-RF433-keys/
+
+D'une manière générale, la difficulté des implants réside dans le placement de celui-ci à proximité de l'alarme, des capteurs. Sans que celui-ci ne soit trouvé par votre target. Le choix de la cachette est laissé à votre imagination.
 
 ### Cartographie passive
 
@@ -243,4 +276,5 @@ Il n'existe pas de solution 100 % efficace contre un attaquant. Cependant, une a
 
 Les cambrioleurs opportunistes ne maîtrisent généralement pas ces techniques et privilégient les cibles non protégées.
 Le rapport dissuasion/coût d'une alarme grand public reste favorable, à condition d'être conscient de ses limites.
+
 

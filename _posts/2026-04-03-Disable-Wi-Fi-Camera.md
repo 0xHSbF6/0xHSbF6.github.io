@@ -157,6 +157,3 @@ L'attaque par désauthentification est spécifique au protocole `802.11`. Une ca
 **Détection des trames de désauthentification**
 
 Un `WIDS` (`Wireless Intrusion Detection System`) peut monitorer les trames de gestion et alerter en cas de flood de désauthentification. La détection n'empêche pas l'attaque mais permet de prévenir le propriétaire que quelque d'anormal se passe. 
-
-
-
