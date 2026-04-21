@@ -1,82 +1,83 @@
 ---
-title: Reverse engineering télécommandes RF433
+title: Reverse engineering RF433 remotes
 date: 2026-04-02
 categories: [IoT]
 tags: [IoT, Home Automation, Radio Frequency]
 ---
 
-# Reverse engineering télécommandes RF433
+# Reverse Engineering RF433 Remotes
 
 ## Introduction
 
-Beaucoup de télécommandes pour ouvrir les portails de garage ou pour activer/désactiver des alarmes anti-intrusion d'entrée de gamme utilisent une porteuse à `433,92 MHz`.
+Many remotes used to open garage gates or to arm/disarm entry-level intrusion alarms use a `433.92 MHz` carrier frequency.
 
-L'objectif de cet article est d'analyser en détail les messages envoyés par ces télécommandes, les décoder et ensuite pouvoir générer nos propres signaux afin de tester la sécurité de nos équipements domotiques.
+The goal of this article is to analyze in detail the messages sent by these remotes, decode them, and then generate our own signals to test the security of our home automation devices.
 
-Nous verrons dans cet article que bien souvent les signaux envoyés ne sont pas chiffrés et sont statiques. 
+We'll see that the signals are often unencrypted and static.
 
-Si vous capturez un signal de désactivation d'alarme ou d'ouverture d'une porte de garage et qu'il n'y a pas de rolling code, vous serez en mesure de faire une attaque par rejeu et donc désactiver l'alarme ou ouvrir la porte.
+If you capture a disarm or garage door open signal and there's no rolling code, you'll be able to run a replay attack and disarm the alarm or open the door.
 
-Sur ce bloc, j'utilise cette attaque dans l'article "Comment neutraliser une alarme anti-intrusion ?"
+On this blog, I use this attack in the article "How to disable an intrusion alarm?"
 
-Nous verrons également qu'on peut aller plus loin en déduisant le signal d'ouverture à partir du signal de fermeture, et dans le dernier cas, qu'un espace combinatoire insuffisant permet un bruteforce complet en dizaines de minutes. 
+We'll also see that you can go further by deducing the open signal from the close signal, and in the last case, that an insufficient key space allows a full brute-force in a matter of minutes.
 
-## Matériel et logiciel
+## Hardware and Software
 
 ### Hardware
 
-- **Flipper Zero** 
+- **Flipper Zero**
 
-Émetteur/récepteur très pratique car il tient dans la poche. Il est capable de décoder la plupart des signaux `RF 433 MHz` et de générer de nouveaux signaux. Utile pour une validation rapide sur le terrain, mais insuffisant pour une analyse approfondie. Environ 200€.
+A very practical transceiver because it fits in your pocket. It can decode most `RF 433 MHz` signals and generate new ones. Useful for quick field validation, but not enough for a deep analysis. Around 200€.
 
-- **HackRF One** 
+- **HackRF One**
 
-Émetteur/récepteur couvrant de `1 MHz` à `6 GHz`. Nécessite un PC. Très puissant pour la génération de signaux de tout type, pas uniquement RF 433. Environ 400€ avec les antennes.
-- **RTL-SDR** 
-Récepteur uniquement. Peu coûteux (~40€). Doit être relié à un PC. Peut aller jusqu'à `1,7 GHz`. 
+A transceiver covering `1 MHz` to `6 GHz`. Requires a PC. Very powerful for generating all kinds of signals, not just RF 433. Around 400€ with antennas.
+
+- **RTL-SDR**
+
+Receive only. Low cost (~40€). Must be connected to a PC. Can go up to `1.7 GHz`.
 
 ### Software
 
-- **URH (Universal Radio Hacker)** 
-- 
-Permet de visualiser, analyser et décoder des signaux radio capturés. 
+- **URH (Universal Radio Hacker)**
+
+Lets you visualize, analyze, and decode captured radio signals.
 
 <a href="https://github.com/jopohl/urh">https://github.com/jopohl/urh</a>
 
-- **rtl_433** 
+- **rtl_433**
 
-Outil de décodage automatique de signaux `RF 433 MHz`. Supporte des centaines de protocoles et permet d'identifier rapidement l'encodage utilisé.
+Automatic `RF 433 MHz` signal decoding tool. Supports hundreds of protocols and quickly identifies the encoding used.
 
 <a href="https://github.com/merbanan/rtl_433">https://github.com/merbanan/rtl_433</a>
 
-## A - Télécommande RF433 classique
+## A - Classic RF433 Remote
 
 ### Reverse
 
-Cette télécommande permet d'ouvrir et fermer une porte de garage à distance.
+This remote opens and closes a garage door.
 
-Quand nous appuyons sur un bouton, nous pouvons connaître la fréquence de communication grâce au spectre.
+When we press a button, we can identify the communication frequency from the spectrum.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/spectre-urh-telecommande1.png){: width="950" .center}
 
-
-Il est possible aussi de voir un peu plus en détail le signal radio.
+We can also look at the radio signal in more detail.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/capture-urh-telecommande1.png){: width="950" .center}
 
-URH nous permet d'extraire du signal radio les bits du signal envoyé par la télécommande.
+URH lets us extract the bits from the radio signal sent by the remote.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/extraction-signal-urh-telecommande1.png){: width="950" .center}
 
-Voici la photo du `PCB` de cette télécommande.
+Here is a photo of the remote's `PCB`.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/pcb-telecommande1.png){: width="450" .center}
 
-En ouvrant le `PCB` de la télécommande, nous pouvons récupérer le nom du CI qui gère l'encodage des signaux radio. On peut lire `STC1527`. Une rapide recherche sur internet nous amène sur la datasheet du CI http://www.sc-tech.cn/en/SCT1527.pdf
+By opening the remote's `PCB`, we can read the name of the IC that handles radio signal encoding. It reads `STC1527`. A quick search online leads to the IC's datasheet: http://www.sc-tech.cn/en/SCT1527.pdf
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/sct1527-datasheet-1.png){: width="900" .center}
 
-Le décodage est assez facile et peut se faire à la main. Grâce à la datasheet, nous savons que :
+Decoding is straightforward and can be done by hand. From the datasheet, we know that:
 
 ```
 0 = L = 1000
@@ -85,50 +86,49 @@ Le décodage est assez facile et peut se faire à la main. Grâce à la datashee
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/sct1527-datasheet-2.png){: width="900" .center}
 
-Analysons le signal. Celui-ci est répété 14 fois quand on appuie sur le bouton. De cette manière, même s'il y a une interférence au moment de l'appui, le signal sera quand même compréhensible par le récepteur.
+Let's analyze the signal. It's repeated 14 times when you press the button. This way, even if there's interference at the moment of the press, the receiver will still understand the signal.
 
 ```
 100010001000111011101110100010001000100011101000111011101000111011101000111010001110100010001000
 ```
 
-Ce qui nous donne
+Which gives us:
 
 ```
 1000 1000 1000 1110 1110 1110 1000 1000 1000 1000 1110 1000 1110 1110 1000 1110 1110 1000 1110 1000 1110 1000 1000 1000
 ```
 
-Oublions le `1` qui se glisse entre chaque trame. C'est le préambule. 
+Let's ignore the `1` that appears between each frame. That's the preamble.
 
-En suivant la doc, on obtient :
+Following the datasheet:
 
 ```
 0001 1100 0010 1101 1010 1000 --> 1C2DA8.
 ```
 
-Même sans la datasheet, il est possible de lire le signal visuellement en zoomant dans `URH` :
-
+Even without the datasheet, it's possible to read the signal visually by zooming in URH:
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/analyse-urh-telecommande-1.png){: width="950" .center}
 
-Ceci est un `0`
+This is a `0`:
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/0-urh-telecommande1.png){: width="950" .center}
 
-Ceci est un `1`
+This is a `1`:
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/1-urh-telecommande1.png){: width="950" .center}
 
-La doc indique que le signal est composé de deux parties (hormis le préambule). Les premiers octets `1C2DA8` encodent le `Device ID`. Ils identifient la télécommande. Le dernier octet encode le bouton.
+The datasheet says the signal has two parts (besides the preamble). The first bytes `1C2DA8` encode the `Device ID`. They identify the remote. The last byte encodes the button.
 
-Si nous avons configuré notre alarme pour l'activer à partir du bouton 1 `1C2DA8` et la désactiver avec le bouton 2 `1C2DA4`
+If we configured our alarm to arm with button 1 `1C2DA8` and disarm with button 2 `1C2DA4`:
 
-Vous pouvez aussi le décoder automoatiquement avec le flipper zéro mais c'est moins drôle.
+You can also decode it automatically with the Flipper Zero, but that's less fun.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/flipper-1C2DA8.png){: width="450" .center}
 
-Bonne nouvelle, nous retrouvons les mêmes valeurs que lors de notre analyse manuelle. 
+The values match what we found in our manual analysis.
 
-Ou avec `rtl_433`: 
+Or with `rtl_433`:
 
 ```
 rtl_433 -M hires -M level
@@ -136,120 +136,119 @@ rtl_433 -M hires -M level
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/rtl_433-1C2DA8.png){: width="950" .center}
 
-Attention : le nom `Akhan-100F14` est inexact car `rtl_433` déduit le nom de l'équipement à partir du signal décodé. Parfois, il se trompe.
+Note: the name `Akhan-100F14` is incorrect — `rtl_433` guesses the device name from the decoded signal and sometimes gets it wrong.
 
-En revanche il a bien trouvé le device ID `0x1C2DA` et le bouton `0x8`.
+But it correctly found device ID `0x1C2DA` and button `0x8`.
 
-### Creér une nouvelle clef
+### Creating a New Key
 
-Maintenant que nous avons compris comment est encodé le signal, nous pouvons le modifier pour générer un signal compatible avec le récepteur. 
+Now that we understand how the signal is encoded, we can modify it to generate a signal compatible with the receiver.
 
-Imaginons que nous n'ayons capturé que le signal de fermeture de la porte. Nous voulons l'ouvrir.
+Imagine we only captured the door close signal. We want to open it.
 
-Nous savons que le signal de fermeture est:
+We know the close signal is:
 
 ```
 1000 1000 1000 1110 1110 1110 1000 1000 1000 1000 1110 1000 1110 1110 1000 1110 1110 1000 1110 1000 1110 1000 1000 1000 ==> 1C2DA8
 ```
 
-Il suffit de modifier le dernier octet pour obtenir le signal d'ouverture :
+We just need to change the last byte to get the open signal:
 
 ```
 1000 1000 1000 1110 1110 1110 1000 1000 1000 1000 1110 1000 1110 1110 1000 1110 1110 1000 1110 1000 1000 1110 1000 1000 ==> 1C2DA4
 ```
 
-Appliquons cette modification sur urh. Depuis la fenêtre générateur, nous pouvons modifier directement les `0` et les `1`. 
+Let's apply this change in URH. From the generator window, we can directly modify the `0`s and `1`s.
 
-Attention à appliquer la modification partout car le signal est répété plusieurs fois.
+Make sure to apply the change everywhere since the signal is repeated multiple times.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/create-new-key.png){: width="950" .center}
 
-Appuyons sur start. Le flipper zéro sera l'arbitre et affichera le signal.
+Let's hit start. The Flipper Zero will act as a validator and display the signal.
 
 <video controls width="100%">
   <source src="/assets/vid/Reverse-engineering-télécommande-RF433/play-new-signal.mp4" type="video/mp4">
 </video>
 
-Techniquement, le signal est bon et face à un vrai récepteur radio, la porte de garage s'ouvrirait. A défaut, il faudra aussi encoder le signal `1C2DA2` et `1C2DA1`.
+Technically the signal is correct and against a real radio receiver, the garage door would open. If not, you'll also need to try encoding `1C2DA2` and `1C2DA1`.
 
-## B - Télécommande RF433 vulnérable
+## B - Vulnerable RF433 Remote
 
-On va maintenant reverser le signal emis par une serrure connectée vulnérable disponible sur Amazon sous différentes marques (rebranding)
+Now let's reverse the signal from a vulnerable connected lock available on Amazon under various brand names (rebranding).
 
-**Capture et analyse du signal**
+**Capturing and analyzing the signal**
 
-On capture le signal avec le RTL-SDR pendant qu'on appuie sur le bouton de la télécommande. En ouvrant le fichier `cu8` dans `URH`, on observe la structure suivante :
+We capture the signal with the RTL-SDR while pressing the remote button. Opening the `.cu8` file in `URH`, we observe the following structure:
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/image-29.png){: width="950" .center}
 
-Une longue impulsion de synchronisation à gauche (~5400µs), suivie d'une série de pulses réguliers avec des espacements variables. 
+A long sync pulse on the left (~5400µs), followed by a series of regular pulses with variable spacing.
 
-Pour encoder un 0 ou un 1 dans un signal `ASK/OOK`, il n'existe que quelques méthodes courantes :
+To encode a 0 or a 1 in an `ASK/OOK` signal, there are only a few common methods:
 
-- **PWM (Pulse Width Modulation)** : 
+- **PWM (Pulse Width Modulation)**:
 
-c'est la largeur du pulse qui encode le bit 
-- un pulse court = `0`, 
-- un pulse long = `1`. 
-  
-C'est ce qu'utilise la première télécommande avec le `STC1527`
+The pulse width encodes the bit:
+- a short pulse = `0`
+- a long pulse = `1`
 
-- **PPM (Pulse Position Modulation)** : 
+This is what the first remote uses with the `STC1527`.
 
-c'est la durée du silence après un pulse fixe qui encode le bit
+- **PPM (Pulse Position Modulation)**:
 
-Sur notre signal, les pulses sont tous identiques (`~400µs`). En revanche on observe clairement deux catégories de gaps : des silences courts (`~400µs`) et des silences longs (`~800µs`). Ce qui est une signature de la modulation `ASK/PPM`
+The silence duration after a fixed-width pulse encodes the bit.
 
-On peut donc poser l'hypothèse suivante
+In our signal, all pulses are identical (~`400µs`). However, we can clearly see two categories of gaps: short silences (~`400µs`) and long silences (~`800µs`). This is a signature of `ASK/PPM` modulation.
+
+We can therefore make the following assumption:
 
 ```
-Gap court  : ~400µs → bit 0
-Gap long   : ~800µs → bit 1
+Short gap : ~400µs → bit 0
+Long gap  : ~800µs → bit 1
 ```
 
-Le signal est répété entre 10 et 32 fois selon la durée d'appui sur la télécommande. 
+The signal is repeated between 10 and 32 times depending on how long the button is held.
 
-En suivant ces règles, nous pouvons lire
+Following these rules, we can read:
 
 ```
 1101 0101 0000 0110 0000 0000 0000 001 ===> 0xD5060002
 ```
 
-Nous avons vu sur les deux premières télécommandes que les signaux provenant du bouton 1 et du bouton 2 d'une même télécommande se ressemblent beaucoup. Seul 4 bits changent (hormis la partie chiffrée sur le rolling code).
+We saw with the first two remotes that signals from button 1 and button 2 of the same remote look very similar. Only 4 bits change (excluding the encrypted part on rolling code remotes).
 
-Si nous comparons avec cette méthode deux signaux provenant de cette télécommande, nous trouvons `0xD5040002`
+If we compare two signals from this remote using this method, we find `0xD5040002`:
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/seconde-clef-signal-urh.png){: width="950" .center}
 
-Ce qui confirme que notre analyse est correcte.
+This confirms our analysis is correct.
 
-En analysant plusieurs télécommandes de la même gamme, on observe rapidement un pattern dans les payloads :
+By analyzing several remotes from the same product line, a pattern quickly emerges in the payloads:
 
 ```
-0xAAA60002  ===>  fermeture
-0xAAA40002  ===>  ouverture
-0xD5060002  ===>  fermeture
-0xD5040002  ===>  ouverture
-0x56C60002  ===>  fermeture
-0x56C40002  ===>  ouverture
+0xAAA60002  ===>  close
+0xAAA40002  ===>  open
+0xD5060002  ===>  close
+0xD5040002  ===>  open
+0x56C60002  ===>  close
+0x56C40002  ===>  open
 ```
 
 ```
 0x[device_id][action]0002
 ```
 
-- **device_id** : 12 bits, identifiant unique de la télécommande
-- **action**: 0x6 = fermeture  ou  0x4 = ouverture
-- **0x0002** : suffixe fixe du protocole
+- **device_id**: 12 bits, unique identifier for the remote
+- **action**: 0x6 = close  or  0x4 = open
+- **0x0002**: fixed protocol suffix
 
+**The combinatorial flaw**
 
-**La faille combinatoire**
+The device_id is encoded on `12 bits`, giving only 4096 possible combinations (`0x000` to `0xFFF`). That's terrible. The first remote we analyzed had `16⁵` possible device IDs.
 
-Le device_id est encodé sur `12 bits`, ce qui donne seulement 4096 combinaisons possibles (`0x000` à `0xFFF`). C'est catastrophique. La première télécommande que nous avons analyser avait `16⁵` device_id différent. 
+A brute-force attack is therefore very feasible on this lock. Depending on the transmission delay and your luck, about forty minutes is enough to find a valid key.
 
-L'attaque par bruteforce est donc largement possible sur cette nouvelle serrure. En fonction de la durée d'émission et notre chance, une quarantaine de minutes suffisent pour trouver une clé valide. 
-
-Ce script permet de généréer un signal valide. 
+This script generates a valid signal:
 
 ```py
 import numpy as np
@@ -284,69 +283,66 @@ signal = generate(device_id=0xD50, action=0x4, n_repeat=30)
 signal.tofile("signal_ouverture.cu8")
 ```
 
-Pour envoyer le signal avec le hackrf
+To send the signal with the HackRF:
 
 ```
 hackrf_transfer -t signal_ouverture.cu8 -f 433840000 -s 2000000 -a 1 -x 47 -R
 ```
 
-Il est ensuite facile de générer l'ensemble des signaux possibles afin d'ouvrir cette fameuse serrure par bruteforce. 
+It's then straightforward to generate all possible signals to brute-force this lock.
 
-Lors de mes essais de bruteforce, je me suis apperçu que si un `device_id[n]` était valide `devide_id[n+1]` aussi
-par exemple:
+During my brute-force tests, I noticed that if `device_id[n]` is valid, `device_id[n+1]` is also valid. For example:
 
 ```
-0x56C40002  ===>  ouverture
-0x56C60002  ===>  fermeture
-0x56D40002  ===>  ouverture
-0x56D60002  ===>  fermeture
+0x56C40002  ===>  open
+0x56C60002  ===>  close
+0x56D40002  ===>  open
+0x56D60002  ===>  close
 ```
 
-Ceci est vrai quelque soit le device_id. 
+This holds true for any device_id.
 
+## C - RF433 Rolling Code Key
 
-## C - Clef RF433 Rolling code
+### Introduction to rolling code
 
-### Introduction au rolling
+We'll now analyze a second key that uses rolling code and also operates on `433 MHz`. It's supposed to be more secure than the previous ones.
 
+**How rolling code works**
 
-Nous allons maintenant analyser une seconde clef avec du rolling code qui fonctionne elle aussi sur `433 MHz`. Elle est censée être plus sécurisée que les précédentes.
+The idea: each time the button is pressed, a counter increments on the transmitter side. This counter is encrypted with a key shared between the transmitter and the receiver. The transmitted code therefore changes with each use, making it useless to record and replay a captured code. The receiver decrypts the message, checks that the counter is within an acceptable window, and executes the command if everything checks out.
 
-**Fonctionnement du rolling code**
+One of the most common algorithms in rolling code home automation devices is `KeeLoq (Microchip)`.
 
-Le principe : à chaque appui bouton, un compteur s'incrémente côté émetteur. Ce compteur est chiffré avec une clé partagée entre l'émetteur et le récepteur. Le code transmis change donc à chaque utilisation, rendant l'enregistrement et le rejeu d'un code capturé inutile. Le récepteur déchiffre le message, vérifie que le compteur est dans une fenêtre acceptable, et exécute la commande si tout est cohérent.
+It exists in a "Classic" version and an "Ultimate" version that uses `AES-128` instead of the original `KeeLoq` encryption which uses a `64-bit key`.
 
-Un des algorithmes les plus courants dans les appareils domotiques à rolling code est `KeeLoq (Microchip)`. 
+Each remote's encryption key (`device key`) is derived by combining the manufacturer key with the transmitter's serial number.
 
-Il existe en version "Classic" et en version "Ultimate" qui utilise `AES-128` à la place du chiffrement `KeeLoq` d'origine qui utilise une clé de `clé de 64 bits`.
-
-La clé de chiffrement de chaque télécommande (`device key`) est dérivée en combinant cette clé fabricant avec le numéro de série de l'émetteur. 
-
-Bien évidemmeent des clés ont fabricant plusieurs fois vu leur clé leaker, ce qui permet de déchiffrer les trames de tous les appareils de la marque concernée.
+Of course, several manufacturers have had their keys leaked, which makes it possible to decrypt frames from all devices of the affected brand.
 
 <a href="https://www.youtube.com/watch?v=Zr_NCoSH2cg">Unlocking KeeLoq: A Reverse Engineering Story - Rogan Dawes</a>
 
-L'attaque `rolljam` qui permet sur le papier de récupérer un code valide. Dans les faits sauf si c'est un fake Tiktok ou que vous avez les planètes alignées. Cette attaque est difficile à réaliser dans la pratique. 
+The `RollJam` attack theoretically allows you to capture a valid code. In practice, unless it's a fake TikTok demo or the stars are aligned, this attack is hard to pull off.
 
-Même si le rolling code est intéressant, il n'est pas toujours bien implémenté ce qui permet de l'attaquer sans avoir besoin de faire une attaque rolljam
+Even though rolling code is interesting, it's not always well implemented, which means it can sometimes be attacked without needing a RollJam.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/setup-analyse.png){: width="850" .center}
 
-Ceci est un récepteur que j'ai testé qui permet une attaque par rejeu à cause d'une faille dans la réassociation de la clef... 
+This is a receiver I tested that allows a replay attack due to a flaw in the key re-association...
 
-Normalement nous ne pouvons pas réassocier une clef avec un compteur très inférieur au compteur du récepteur... 
+Normally, you can't re-associate a key with a counter much lower than the receiver's counter...
 
-La réassociation se fait très bien quand le compteur de la télécommande est en avance sur le compteur du récepteur. L'inverse pose problème... car à ce moment c'est du rejeu...
+Re-association works fine when the remote's counter is ahead of the receiver's counter. The opposite is a problem... because at that point it's replay...
 
-Je dis ça je dis rien...
+I'm just saying...
 
-### Reverse cle RF433 Keeloq
+### Reverse engineering the RF433 KeeLoq key
 
-On peut voir que le signal est envoyé plusieurs fois, toujours pour la même raison : garantir la réception même en cas d'interférence.
+You can see the signal is sent multiple times — again to guarantee reception even if there's interference.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/urh-rollingcode.png){: width="950" .center}
 
-Si nous appuyons 3 fois sur le même bouton, on observe 3 signaux différents :
+If we press the same button 3 times, we observe 3 different signals:
 
 ```
 101010101010101010101 [Pause: 4325 samples]
@@ -359,80 +355,84 @@ Si nous appuyons 3 fois sur le même bouton, on observe 3 signaux différents :
 10011010010011011011010010010010011010011010010010010010011010010011010010010011011011010010011010011011011011011011010011010010011011011010011010011011010011010011010010010010010011010011011011011
 ```
 
-Nous allons suivre le même protocole de reverse que précédemment et analyser, dans un premier temps, le `PCB`
+We'll follow the same reverse engineering process as before and start by analyzing the `PCB`.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/pcb-hcs300.png){: width="450" .center}
 
-On peut lire sur le `CI` principal le code `HCS300`. La datasheet est facilement trouvable en ligne et nous fournit les informations nécessaires pour décoder le signal.
+On the main `IC` we can read `HCS300`. The datasheet is easy to find online and gives us everything we need to decode the signal.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/hcs300-datasheet.png){: width="700" .center}
 
-Le signal utilise un encodage `PWM` où chaque bit est représenté par un `rapport cyclique` différent.
+The signal uses `PWM` encoding where each bit is represented by a different `duty cycle`.
 
-La datasheet nous donne également le mapping des champs :
+The datasheet also gives us the field mapping:
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/reverse-hcs300.png){: width="850" .center}
 
-Le mot de `66 bits` est transmis `LSB` en premier. Dans l'ordre de réception :
+The `66-bit` word is transmitted `LSB` first. In reception order:
 
-- **Bits 0–31** : Encrypted (32 bits chiffrés KeeLoq)
-- **Bits 32–59** : Serial Number (28 bits, en clair)
-- **Bits 60–63** : Boutons dans l'ordre S3, S0, S1, S2
-- **Bit 64** : VLOW (batterie faible)
-- **Bit 65** : RPT (repeat)
+- **Bits 0–31**: Encrypted (32 KeeLoq-encrypted bits)
+- **Bits 32–59**: Serial Number (28 bits, in plaintext)
+- **Bits 60–63**: Buttons in order S3, S0, S1, S2
+- **Bit 64**: VLOW (low battery)
+- **Bit 65**: RPT (repeat)
 
-Le signal est envoyé en deux parties : un préambule puis les données.
+The signal is sent in two parts: a preamble and then the data.
 
-- préambule
+- preamble
 - data
 
-Les trois signaux partagent le même préambule: `101010101010101010101`. Il n'est pas nécessaire de le décoder car c'est juste un signal de synchronisation. 
+The three signals share the same preamble: `101010101010101010101`. There's no need to decode it — it's just a sync signal.
 
-Donc maintenant on va s'intéresser à la partie data du premier signal
+So now let's look at the data part of the first signal:
 
 ```
 11010011010011010011011011011011011010011010011010011011010010011010011011010011011010010011010010011011011011011011010011010010011011011010011010011011010011010011010010010010010011010011011011011
 ```
 
-La datasheet nous dit que 
+The datasheet tells us:
 
 ```
 1:110
 0:100
 ```
 
-donc 
+So:
 
 ```
 110 100 110 100 110 100 110 110 110 110 110 110 100 110 100 110 100 110 110 100 100 110 100 110 110 100 110 110 100 100 110 100 100 110 110 110 110 110 110 100 110 100 100 110 110 110 100 110 100 110 110 100 110 100 110 100 100 100 100 100 110 100 110 110 110 11
 ```
 
-Les `66 bits` décodés donnent :
+The decoded `66 bits` give:
 
 ```
 101010111111010101100101101100100111111010011101011010100000101111
 ```
-En suivant le mapping:
+
+Following the mapping:
+
 ```
 Bits 0-31 (Encrypted)  : 10101011111101010110010110110010
 Bits 32-59 (Serial 28b): 0111111010011101011010100000
-Bits 60-63 (Boutons)   : 1 0 1 1  --> le bouton 1 est appuyé
+Bits 60-63 (Buttons)   : 1 0 1 1  --> button 1 is pressed
 Bit 64 (VLOW)          : 1
 Bit 65 (RPT)           : 1
-````
+```
 
-En comparant les 3 signaux, la partie chiffrée change bien à chaque appui :
+Comparing the 3 signals, the encrypted part does change with each press:
 
-(Attention au `LSB` first)
+(Note: `LSB` first)
+
 ```
 10101011111101010110010110110010 --> 0x4DA6AFD5
 01101101000110010111101111110001 --> 0x8FDE98B6
 01001110000101000001001000111001 --> 0x9C482872
 ```
 
-Le `serial number` reste identique :
+The `serial number` stays the same:
+
 ```
 0111111010011101011010100000 --> 0x056B97E
 ```
 
-Dans les 3 cas c'est le même bouton qui est appuyé donc `1011`
+In all 3 cases the same button is pressed, so `1011`.

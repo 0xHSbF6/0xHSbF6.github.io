@@ -1,85 +1,85 @@
 ---
-title: Ne laissez pas traîner vos clefs
+title: Don't Leave Your Keys Lying Around
 date: 2026-04-03
 categories: [IoT]
 tags: [IoT, NFC, Home Automation]
 ---
 
-# Ne laissez pas traîner vos clefs
+# Don't Leave Your Keys Lying Around
 
-## Contexte
+## Context
 
-Votre collègue Toto a installé chez lui une serrure connectée de ce type, achetée à bas coût sur Internet. Votre mission est de vous introduire chez lui.
+Your colleague Toto has installed a cheap connected lock at his place, bought online. Your mission is to get inside.
 
 ![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/badge-serrure.png){: width="400" .center}
 
-La serrure s'ouvre de 5 manières :
-- code
-- empreinte digitale
-- badge
-- clef
-- depuis l'application mobile TTLock
+The lock can be opened in 5 ways:
+- PIN code
+- Fingerprint
+- Badge
+- Key
+- From the TTLock mobile app
 
-Nous allons nous intéresser à la partie badge `NFC`. L'objectif sera d'ouvrir la serrure de Toto en copiant son badge.
+We are going to focus on the `NFC` badge. The goal is to open Toto's lock by cloning his badge.
 
-## Rappel juridique
+## Legal Reminder
 
-La loi est très claire : s'introduire dans un système informatisé sans l'autorisation du propriétaire est illégal (articles 323-1 et suivants du Code pénal).
+The law is clear: accessing a computerized system without the owner's permission is illegal (articles 323-1 and following of the French Penal Code).
 
-Ce scénario est fictif et toutes les manipulations ont été effectuées sur ma propre serrure, dans mon propre lab.
+This scenario is fictional and all the steps were performed on my own lock, in my own lab.
 
-Au vu des photos de mon lab de serrure connectée, vous devriez le comprendre aisément.
+Looking at the photos of my connected lock lab, you should be able to tell.
 
-## Étape 1 : Récupérer les informations du badge
+## Step 1: Read the Badge Information
 
-Dans notre scénario, Toto a laissé traîner ses clefs. Vous n'avez pas d'équipement de type Flipper Zero ou Proxmark. En revanche, vous avez votre téléphone dans la poche. En utilisant l'application NFC Tools, vous scannez le badge et obtenez les informations suivantes :
+In our scenario, Toto left his keys unattended. You don't have a Flipper Zero or a Proxmark. But you have your phone in your pocket. Using the NFC Tools app, you scan the badge and get the following information:
 
 ![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/badge-table.png){: width="950" .center}
 
 ![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/nfc-tool.png){: width="400" .center}
 
-On y retrouve :
+You can see:
 
-- Type de tag : ISO 14443-3A — NXP Mifare Classic 1K
-- Numéro de série (UID) : 48:A3:D3:E3
-- ATQA : 0x0004
-- SAK : 0x08
-- Mémoire : 1 Ko répartie en 16 secteurs de 4 blocs (16 octets par bloc)
+- Tag type: ISO 14443-3A — NXP Mifare Classic 1K
+- Serial number (UID): 48:A3:D3:E3
+- ATQA: 0x0004
+- SAK: 0x08
+- Memory: 1 KB split into 16 sectors of 4 blocks (16 bytes per block)
 
-**Pourquoi ça fonctionne avec un simple téléphone ?**
+**Why does it work with just a phone?**
 
-Ici, c'est possible car le récepteur de la serrure vérifie uniquement le numéro de série (`UID`) de la carte.
-Dans la vraie vie, vous n'avez aucun moyen de le savoir avant d'essayer.
+It works here because the lock's reader only checks the card's serial number (`UID`).
+In real life, you have no way of knowing this before you try.
 
-Dans certains cas, la serrure vérifie aussi le contenu de la carte en lecture.
-Tout va alors dépendre de la technologie de la carte et des protections mises en place par le constructeur, notamment les mots de passe protégeant l'accès aux secteurs.
+In some cases, the lock also reads the card's content.
+It then depends on the card technology and the protections the manufacturer put in place, especially the passwords protecting access to the sectors.
 
-**Et si la serrure vérifie le contenu de la carte ?**
+**What if the lock checks the card's content?**
 
-Depuis plusieurs années, les cartes de type Mifare Classic 1K sont presque toujours vulnérables.
-Même si des mots de passe robustes protègent les secteurs, des techniques d'attaque cryptographique (comme les attaques darkside, nested ou hardnested) permettent dans la quasi-totalité des cas de les retrouver.
+For several years now, Mifare Classic 1K cards have almost always been vulnerable.
+Even if strong passwords protect the sectors, cryptographic attack techniques (such as darkside, nested, or hardnested attacks) can recover them in almost all cases.
 
-En utilisant un Flipper Zero ou un Proxmark3, quelques minutes suffisent la plupart du temps pour récupérer l'intégralité du contenu de la carte.
+Using a Flipper Zero or a Proxmark3, it usually takes just a few minutes to read the full card content.
 
-**En résumé**
+**In short**
 
-Si Toto s'éloigne quelques secondes de son bureau ET que vous avez juste votre téléphone avec vous, ALORS croisez les doigts pour que seul le numéro de série suffise à copier la carte.
+If Toto steps away from his desk for a few seconds AND you only have your phone, then hope the serial number alone is enough to clone the card.
 
-## Étape 2 : Créer une nouvelle carte
+## Step 2: Create a New Card
 
-Maintenant que vous avez les informations du badge sur votre téléphone, vous pouvez tranquillement créer un clone en utilisant un Proxmark3.
+Now that you have the badge information on your phone, you can quietly create a clone using a Proxmark3.
 
 ![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/proxmark.png){: width="950" .center}
 
-J'utilise ici une Magic Card. Contrairement à une carte Mifare Classic dont le `bloc 0` (contenant le numéro de série) est verrouillé en écriture en usine, une Magic Card permet de modifier librement ce numéro de série.
+I'm using a Magic Card here. Unlike a standard Mifare Classic card where `block 0` (which holds the serial number) is locked from writing at the factory, a Magic Card lets you freely modify the serial number.
 
-Pour écrire l'UID sur la Magic Card, on peut utiliser la commande Proxmark3 suivante :
+To write the UID onto the Magic Card, you can use this Proxmark3 command:
 
 ```
 hf mf csetuid -u 48A3D3E3 -a 0004 -s 08
 ```
 
-Puis vérifier les informations de la carte avec :
+Then verify the card info with:
 
 ```
 hf mf info
@@ -87,72 +87,71 @@ hf mf info
 
 ![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/pm3-info.png){: width="1000" .center}
 
-On constate que l'`UID`, l'`ATQA` et le `SAK` correspondent bien à ceux du badge original. Comme on l'a vu plus tôt, pas besoin de modifier le contenu des autres secteurs de la carte car notre serrure ne les vérifie pas.
+The `UID`, `ATQA`, and `SAK` all match the original badge. As we saw earlier, there's no need to modify the other sectors of the card because our lock doesn't check them.
 
-On peut aussi utiliser le Flipper Zero en saisissant directement l'`UID` en hexadécimal dans le menu `NFC` :
+You can also use the Flipper Zero by entering the `UID` in hexadecimal directly in the `NFC` menu:
 
 ![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/emulate-card-flipper.png){: width="450" .center}
 
-## Étape 3 : Ouvrir la porte
+## Step 3: Open the Door
 
-Maintenant que vous avez créé votre carte clone, vous pouvez l'utiliser pour ouvrir la serrure de Toto. La LED verte confirme que l'accès est accordé.
+Now that you've made your cloned card, you can use it to open Toto's lock. The green LED confirms access is granted.
 
-Avec la carte `UID` clonée :
+With the cloned `UID` card:
 
 ![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/open-door-card.png){: width="400" .center}
 
-Avec le Flipper Zero en mode émulation :
+With the Flipper Zero in emulation mode:
 
 ![alt text](/assets/img/posts/Ne-laissez-pas-traîner-vos-clefs/open-door-flipper.png){: width="400" .center}
 
-Les deux méthodes fonctionnent : que ce soit en présentant la carte physique clonée ou en utilisant le Flipper Zero qui émule le badge, la serrure s'ouvre.
+Both methods work: whether you present the cloned physical card or use the Flipper Zero to emulate the badge, the lock opens.
 
 ## Mitigations
 
-### Les lecteurs qui écrivent sur le badge
+### Readers that write to the badge
 
-Certains systèmes de contrôle d'accès ne se contentent pas de lire le badge : ils y écrivent des données à chaque utilisation.
-C'est le cas par exemple de certains systèmes Intratone utilisés dans les immeubles résidentiels en France.
-Ces systèmes implémentent un rolling counter :
-à chaque passage, le lecteur incrémente un compteur stocké sur le badge.
+Some access control systems don't just read the badge — they also write data to it on every use.
+This is the case for some Intratone systems used in residential buildings in France.
+These systems use a rolling counter:
+each time you use it, the reader increments a counter stored on the badge.
 
-Si vous créez un clone du badge, le compteur de votre clone sera figé à la valeur au moment de la copie.
-Dès que le badge original est utilisé, son compteur avance et le clone est désynchronisé, ce qui risque de rendre votre clone inutilisable.
+If you clone the badge, the counter on your clone is frozen at the value it had at the time of copying.
+As soon as the original badge is used, its counter moves forward and the clone becomes out of sync, which may make your clone unusable.
 
-Un conseil si vous voulez copier votre propre badge : effectuez une première lecture avant de créer le clone, puis une seconde lecture après. De cette manière, vous pourrez comparer les deux lectures et identifier ce qui a été modifié.
+A tip if you want to clone your own badge: do a first read before creating the clone, then a second read after. This way you can compare both reads and identify what changed.
 
-### La détection des Magic Cards
+### Magic Card Detection
 
-Certains lecteurs sont capables de détecter les Magic Cards et de refuser l'accès, même si la copie est parfaite au niveau des données.
+Some readers can detect Magic Cards and deny access, even if the data is a perfect copy.
 
-**Vérification du fabricant** :
+**Manufacturer check**:
 
-les cartes Mifare Classic authentiques sont fabriquées par NXP Semiconductors. Les Magic Cards utilisent des puces Fudan ou d'autres fabricants.
-Pour ce faire, le lecteur peut examiner :
+Genuine Mifare Classic cards are made by NXP Semiconductors. Magic Cards use Fudan chips or other manufacturers.
+To detect this, the reader can inspect:
 
-**1er octet de l'UID** :
+**1st byte of the UID**:
 
-les vrais UID NXP commencent par 0x04 (normalisé `ISO/IEC 7816-6`). Les puces Fudan ont leurs propres préfixes.
+Real NXP UIDs start with 0x04 (as defined in `ISO/IEC 7816-6`). Fudan chips have their own prefixes.
 
-**Les octets 8-15 du bloc 0** :
+**Bytes 8–15 of block 0**:
 
-les cartes Fudan laissent souvent la séquence `62 63 64 65 66 67 68 69` (= "`bcdefghi`" en `ASCII`).
+Fudan cards often leave the sequence `62 63 64 65 66 67 68 69` (= "`bcdefghi`" in `ASCII`).
 
-Tout comme mon Proxmark a réussi à détecter la marque de ma Magic Card, le lecteur de badge peut également détecter les clones de cette manière.
+Just like my Proxmark was able to detect my Magic Card's manufacturer, a badge reader can also detect clones this way.
 
-**Sonder la commande de réveil magic (Magic Wakeup)** :
+**Probing the Magic Wakeup command**:
 
-Pour comprendre cette détection, il faut garder en tête qu'un badge `NFC` ne fait pas que lire et écrire des données.
-Il répond aussi à tout un ensemble de commandes protocolaires envoyées par le lecteur : réveil (`REQA`, `WUPA`), mise en veille (`HLTA`)...
+To understand this detection, keep in mind that an `NFC` badge doesn't just read and write data.
+It also responds to a whole set of protocol commands sent by the reader: wake-up (`REQA`, `WUPA`), sleep (`HLTA`)...
 
-Le lecteur peut envoyer la commande Magic Wakeup. Les Magic Cards y répondront par un `ACK`, ce qui trahit leur identité.
-C'est d'ailleurs de cette manière que le Flipper Zero est capable de vérifier si le tag qui lui est présenté est une Magic Card.
+The reader can send the Magic Wakeup command. Magic Cards will respond with an `ACK`, which gives them away.
+This is actually how the Flipper Zero checks whether the tag it's reading is a Magic Card.
 
-Il existe d'autres méthodes de détection des Magic Cards, mais ce sont de loin les plus courantes.
+There are other Magic Card detection methods, but these are by far the most common.
 
 ## Conclusion
 
-Ce petit exercice illustre bien la facilité avec laquelle un badge NFC bas de gamme peut être cloné. Avec un simple smartphone et quelques secondes d'accès au badge, il est possible de récupérer son `UID`.
+This small exercise shows how easy it is to clone a cheap NFC badge. With just a smartphone and a few seconds of access to the badge, you can grab its `UID`.
 
-Avec un Proxmark3 ou un Flipper Zero et une Magic Card à quelques euros, le clone est fonctionnel en quelques minutes.
-
+With a Proxmark3 or a Flipper Zero and a Magic Card that costs a few euros, the clone is ready in minutes.

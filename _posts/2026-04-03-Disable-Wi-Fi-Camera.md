@@ -1,47 +1,47 @@
 ---
-title: Comment neutraliser une caméra de surveillance ? 
+title: How to disable a surveillance camera?
 date: 2026-04-03
 categories: [IoT]
 tags: [IoT, Home Automation, Radio Frequency]
 ---
 
-# Comment neutraliser une caméra de surveillance ? 
+# How to disable a surveillance camera?
 
 ## Context
 
-Vous avez acheté une caméra de surveillance `Wi-Fi` afin de sécuriser votre domicile. Grâce à cela, vous pouvez vérifier si votre chat va bien Si quelqu'un rentre chez vous, il sera filmé et grâce à l'ère l'intelligence artificielle, vous pouvez même recevoir une notification sur votre smartphone qui vous dira qu'un humain vient d'être repéré dans votre couloir. 
+You bought a `Wi-Fi` surveillance camera to secure your home. With it, you can check on your cat. If someone breaks in, they'll be recorded, and thanks to AI, you can even get a notification on your phone telling you a person was spotted in your hallway.
 
-Vous vous sentez en sécurité. Mais est-il possible de neutraliser cette caméra sans avoir besoin de rentrer dans votre réseau `Wi-Fi` ? Dans le but de s'introduire chez vous, puis la réactiver sans laisser de trace ? Êtes-vous certain que votre caméra `Wi-Fi` assurera sa fonction quoi qu'il arrive ? 
+You feel safe. But is it possible to disable this camera without accessing your `Wi-Fi` network? In order to break in and then reactivate it without leaving a trace? Can you really count on your `Wi-Fi` camera to always do its job?
 
-Dans cet article, nous verrons comment repérer passivement une caméra de surveillance `Wi-Fi` pour particulier, puis comment la neutraliser sans avoir besoin de se connecter au réseau `Wi-Fi`. 
+In this article, we'll see how to passively detect a home `Wi-Fi` surveillance camera, then disable it without connecting to the `Wi-Fi` network.
 
-Cette attaque fonctionne relativement bien sur les caméras de surveillance pour particulier d'entrée de gamme car très souvent connectées au réseau uniquement en `Wi-Fi` et rarement compatible `PMF`
+This attack works well against entry-level home surveillance cameras because they are almost always Wi-Fi only and rarely support `PMF`.
 
-Avant d'aller plus loin un petit rappel légal:
+Before going further, a quick legal reminder:
 
-S'introduire dans un système informatique de traitement de données automatisé sans l'autorisation du propriétaire est illégal.
+Accessing an automated data processing computer system without the owner's permission is illegal.
 
 ![alt text](/assets/img/posts/neutraliser-camera/article_321-3.png){: width="950" .center}
 
-Ceci s'applique quel que soit le mobile et quel que soit le système. Les démonstrations présentées ici ont été réalisées sur du matériel dont je suis le propriétaire. 
+This applies regardless of the reason and regardless of the system. The demonstrations shown here were performed on hardware I own.
 
-Ne reproduisez pas ces opérations sans une autorisation écrite.
+Do not reproduce these steps without written authorization.
 
-## Repérer une caméra Wi-Fi
+## Detecting a Wi-Fi Camera
 
-Imaginons le scénario suivant : vous devez savoir si une caméra de surveillance est active sur un réseau `Wi-Fi` dont vous ne connaissez que le `SSID`, pas le mot de passe. Pas de connexion possible, donc pas de scan de ports.
+Imagine this scenario: you need to know if a surveillance camera is active on a `Wi-Fi` network where you only know the `SSID`, not the password. No connection possible, so no port scanning.
 
-Ce n'est pas un problème : nous pouvons sniffer passivement les trames `Wi-Fi`.
+That's not a problem: we can passively sniff `Wi-Fi` frames.
 
-**Pourquoi c'est possible**
+**Why this is possible**
 
-Dans le standard `802.11`, les points d'accès diffusent périodiquement (plusieurs fois par secondes) des beacon frames en broadcast. Ces trames contiennent le `SSID`, le `BSSID` (adresse `MAC` de l'`AP`), le canal et certains paramètres réseau. Elles sont transmises en clair, indépendamment du chiffrement des données (`WPA2`, `WPA3`).
+In the `802.11` standard, access points periodically broadcast (several times per second) beacon frames. These frames contain the `SSID`, the `BSSID` (the `AP`'s `MAC` address), the channel, and some network parameters. They are transmitted in plaintext, regardless of data encryption (`WPA2`, `WPA3`).
 
-De la même manière, les en-têtes des trames de données `802.11` contiennent les adresses `MAC` source, destination et le `BSSID`, en clair. Un adaptateur `Wi-Fi` en mode monitor comme fameuse `carte Alpha` peut donc observer toutes les stations associées à un point d'accès sans connaître la clé du réseau.
+Similarly, the headers of `802.11` data frames contain the source and destination `MAC` addresses and the `BSSID`, in plaintext. A `Wi-Fi` adapter in monitor mode — like the well-known `Alpha card` — can observe all stations associated with an access point without knowing the network key.
 
-**Identifier le point d'accès**
+**Identify the access point**
 
-Dans un premier temps, nous avons besoin de lister les points d'accès `Wi-Fi` autour de nous afin d'identifier le canal et le `BSSID` du réseau `Wi-Fi` cible
+First, we need to list the `Wi-Fi` access points around us to find the channel and `BSSID` of the target network.
 
 ```
 sudo airmon-ng start wlan0
@@ -50,110 +50,111 @@ sudo airodump-ng wlan0mon
 
 ![alt text](/assets/img/posts/neutraliser-camera/list-AP.png){: width="950" .center}
 
-Le réseau cible apparaît dans la liste. Récupérons le `BSSID` et le canal de communication 
+The target network appears in the list. We can grab its `BSSID` and channel.
 
-**Lister les stations associées**
+**List connected stations**
 
-Nous pouvons maintenant lister les équipements connectés à ce point d'accès :
+We can now list the devices connected to this access point:
 
 ```
-sudo airodump-ng --bssid <BSSID_CIBLE> --channel <CH> wlan0mon
+sudo airodump-ng --bssid <TARGET_BSSID> --channel <CH> wlan0mon
 ```
 
 ![alt text](/assets/img/posts/neutraliser-camera/station-connected.png){: width="950" .center}
 
-Cela permet d'identifier deux stations
+This shows two stations.
 
-La première a pour adresse : `1C:4D:89:XX:XX:XX`
-La seconde : `3A:3B:7D:XX:XX:XX`
+The first has address: `1C:4D:89:XX:XX:XX`
+The second: `3A:3B:7D:XX:XX:XX`
 
-**Identifier laquelle est la caméra**
+**Identify which one is the camera**
 
-Les 24 premiers bits d'une adresse `MAC` constituent l'`OUI` (Organizationally Unique Identifier), Une recherche dans la base `IEEE` permet de remonter au fabricant.
+The first 24 bits of a `MAC` address make up the `OUI` (Organizationally Unique Identifier). A lookup in the `IEEE` database gives the manufacturer.
 
-Avant cela, il faut vérifier que l'adresse n'est pas randomisée.
-Si le deuxième bit de poids faible du premier octet est à `0` alors l'adresse `MAC` n'est pas randomisée et il est utile de faire une recherche dans les bases `IEEE`
+First, you need to check that the address is not randomized.
+If the second least significant bit of the first byte is `0`, then the `MAC` address is not randomized and it's worth searching the `IEEE` database.
 
-Dans notre cas 
+In our case:
 
-`1C:4D:89:XX:XX:XX` — `0x1C` = `00011100`, le bit de randomisation = `0`. Donc l'adresse `MAC` n'est pas randominisé
+`1C:4D:89:XX:XX:XX` — `0x1C` = `00011100`, the randomization bit = `0`. The `MAC` address is not randomized.
 
-`3A:3B:7D:XX:XX:XX` — `0x3A` = `00111010`, le bit de randomisation = `1`. L'adresse `MAC` est randominisée.
+`3A:3B:7D:XX:XX:XX` — `0x3A` = `00111010`, the randomization bit = `1`. The `MAC` address is randomized.
 
-Maintenant qu'on sait que l'adresse `MAC` n'est pas randomisée. On peut trouver des informations sur son fabricant
+Now that we know the address is not randomized, we can look up the manufacturer:
 
 <a href="https://macaddresslookup.io/fr?search=1C-4D-89">https://macaddresslookup.io/fr?search=1C-4D-89</a>
 
 ![alt text](/assets/img/posts/neutraliser-camera/adress-lockup.png){: width="950" .center}
 
-Si l'`OUI` renvoyait vers un fabricant généraliste comme `TP-Link (Tapo)`, qui commercialise aussi des prises connectées et des routeurs, le constructeur seul ne suffirait pas à conclure. 
+If the `OUI` pointed to a general-purpose manufacturer like `TP-Link (Tapo)`, which also sells smart plugs and routers, the manufacturer alone wouldn't be enough to confirm it's a camera.
 
-Afin de nous assurer qu'il s'agisse bien d'une caméra, nous allons analyser la fréquence des trames envoyée et reçue par l'équipement 
+To be sure it's a camera, we'll analyze the frequency of frames sent and received by the device.
 
-**Analyse du volume de trames**
+**Frame volume analysis**
 
 ![alt text](/assets/img/posts/neutraliser-camera/statistiques-network.png){: width="950" .center}
 
-Une caméra de surveillance qui envoie en continu un flux de vidéo enverra un nombre très important de paquets. En revanche un aspirateur robot ou une ampoule connectée enverra ou recevra beaucoup moins de paquets.
+A surveillance camera streaming video continuously will send a very large number of packets. A robot vacuum or a smart bulb, on the other hand, sends or receives far fewer.
 
-Vu la fréquence des trames observées sur la station `1C:4D:89:XX:XX:XX`, nous pouvons être quasi certains qu'il s'agit d'une caméra.
+Given the frame rate observed on station `1C:4D:89:XX:XX:XX`, we can be fairly confident it's a camera.
 
-## Neutraliser la caméra
+## Disabling the Camera
 
-Il est maintenant temps d'empêcher la caméra de transmettre son flux. Pour cela, nous allons injecter en boucle des trames de désauthentification `802.11`.
+Now it's time to stop the camera from transmitting its stream. To do this, we'll continuously inject `802.11` deauthentication frames.
 
-**Pourquoi ça fonctionne**
+**Why it works**
 
-Dans le standard `802.11`, les trames de désauthentification sont des notifications: toute station qui en reçoit une doit s'y conformer et se déconnecter. Ces trames de gestion ne sont ni chiffrées ni authentifiées. N'importe qui peut donc en envoyer en direction d'un réseau `Wi-Fi` sans y être connecté. 
+In the `802.11` standard, deauthentication frames are notifications: any station that receives one must comply and disconnect. These management frames are neither encrypted nor authenticated. Anyone can send them toward a `Wi-Fi` network without being connected to it.
 
-En revanche si le `PMF` (`Protected Management Frames`) est activé sur le routeur. Cette attaque ne fonctionnera pas. L'avantage dans notre cas, la plupart des réseaux domestiques n'ont pas ce paramètre activé. De plus il existe peu de caméras grand publique compatible avec ce paramètre. 
+However, if `PMF` (`Protected Management Frames`) is enabled on the router, this attack won't work. The advantage in our case is that most home networks don't have this setting enabled. Also, very few consumer cameras support it.
 
-La caméra maintient une connexion persistante (`WebSocket` ou `MQTT`) vers le serveur cloud du constructeur. C'est par ce canal que transitent le flux vidéo en direct, les notifications de détection et les commandes de contrôle (pan/tilt, activation, etc.). Le smartphone se connecte au même cloud via l'application mobile.
-Quand la caméra est désauthentifiée, elle perd sa connexion `Wi-Fi` au routeur. Toute la chaîne est rompue :
+The camera keeps a persistent connection (`WebSocket` or `MQTT`) to the manufacturer's cloud server. This channel carries the live video stream, detection notifications, and control commands (pan/tilt, activation, etc.). The smartphone connects to the same cloud through the mobile app.
 
-- Le flux vidéo n'est plus transmis au cloud, donc plus visible dans l'application.
-- Les notifications (détection de personne, mouvement) ne peuvent plus être envoyées.
-- La caméra n'est plus contrôlable à distance.
-- Même si la caméra détecte localement un intrus, elle ne peut pas transmettre l'alerte.
+When the camera is deauthenticated, it loses its `Wi-Fi` connection to the router. The whole chain breaks:
 
-Allons-y déconnectons la caméra du réseau et empêchons la de s'y reconnecter
+- The video stream is no longer sent to the cloud, so it's no longer visible in the app.
+- Notifications (person detection, motion) can no longer be sent.
+- The camera can no longer be controlled remotely.
+- Even if the camera detects an intruder locally, it can't send the alert.
+
+Let's disconnect the camera from the network and prevent it from reconnecting:
 
 ```
-sudo aireplay-ng --deauth 0 -a <BSSID_AP> -c <MAC_CAMERA> wlan0mon
+sudo aireplay-ng --deauth 0 -a <AP_BSSID> -c <CAMERA_MAC> wlan0mon
 ```
 
-Le paramètre `--deauth 0` envoie des trames en boucle infinie. La caméra se déconnecte du réseau et ne parvient pas à se réassocier tant que l'injection est maintenue.
+The `--deauth 0` parameter sends frames in an infinite loop. The camera disconnects from the network and cannot reassociate as long as the injection is running.
 
 <video controls width="100%">
   <source src="/assets/vid/neutraliser-camera/neutraliser-camera.mp4" type="video/mp4">
 </video>
 
-J'ai volontairement flouté la partie gauche de la vidéo. Celle qui correspond à mon PC. Pour une raison simple, la commande leak des informations sur mon réseau Wi-Fi (`BSSID` et `SSID`) qui pourrait permettre avec une API comme Wigle de retrouver mon adresse. Le caviardage sur cette vidéo n'est pas efficace donc je préfère utiliser la manière forte, tout flouter. 
+I intentionally blurred the left side of the video — the part showing my PC. The reason is simple: the command leaks information about my Wi-Fi network (`BSSID` and `SSID`) which, combined with an API like Wigle, could be used to find my address. The redaction in this video isn't effective enough, so I preferred the blunt approach and blurred the whole thing.
 
-A droite, vous avez la vue vers l'application mobile de la caméra. Avant l'attaque tout va bien, la caméra envoie son flux, nous pouvons la contrôler depuis le smartphone.
+On the right, you can see the camera's mobile app. Before the attack, everything is fine — the camera is streaming and we can control it from the phone.
 
-Dès que je déclenche l'attaque, la vue caméra se fige, on voit d'ailleurs l'horloge de la caméra se figer car elle n'envoie plus les flux vidéo. 
+As soon as I launch the attack, the camera feed freezes. You can even see the camera's clock stop because it's no longer sending video.
 
-Une fois l'injection arrêtée, la caméra se réassocie automatiquement au point d'accès et le fonctionnement reprend comme si de rien n'était
+Once the injection stops, the camera automatically reassociates with the access point and everything works again as if nothing happened.
 
 ## Mitigations
 
 **802.11w — Protected Management Frames (PMF)**
 
-L'amendement `IEEE 802.11w` introduit la protection des trames de gestion. Quand cette protection est négociée entre l'`AP` et le client, les trames de désauthentification spoofées sont rejetées. Ce paramètre s'active sur un point en `WPA2`, sur le `WPA3`, ce paramètre est activé par défaut. 
+The `IEEE 802.11w` amendment adds protection for management frames. When this protection is negotiated between the `AP` and the client, spoofed deauthentication frames are rejected. This setting can be enabled in `WPA2`, and in `WPA3` it is on by default.
 
-Beaucoup de box pour particulier proposent ce paramètre mais la plupart des caméras d'entrée de gamme pour particulier ne sont pas compatibles.
+Many consumer routers offer this setting, but most entry-level consumer cameras don't support it.
 
-Pour activer la protection, il faut que le `PMF` soit activé sur la caméra et le routeur. 
+For the protection to work, `PMF` must be enabled on both the camera and the router.
 
-**Enregistrement local sur carte SD**
+**Local recording on SD card**
 
-Si l'enregistrement local est activé (carte `micro-SD`), le flux vidéo continue d'être stocké même sans connectivité `Wi-Fi`. L'intrus sera filmé, mais le propriétaire ne recevra aucune alerte en temps réel. 
+If local recording is enabled (via a `micro-SD` card), the video stream continues to be stored locally even without `Wi-Fi` connectivity. The intruder will be filmed, but the owner won't receive any real-time alert.
 
-**Connexion Ethernet / PoE**
+**Ethernet / PoE connection**
 
-L'attaque par désauthentification est spécifique au protocole `802.11`. Une caméra câblée en `Ethernet` y est totalement immunisée. Des attaques sont possibles pour bloquer le flux d'une caméra connectée en Ethernet mais elles demandent d'être dans le réseau. 
+The deauthentication attack is specific to the `802.11` protocol. A camera connected over `Ethernet` is completely immune to it. Attacks to block the stream of a wired camera are possible, but they require being inside the network.
 
-**Détection des trames de désauthentification**
+**Deauthentication frame detection**
 
-Un `WIDS` (`Wireless Intrusion Detection System`) peut monitorer les trames de gestion et alerter en cas de flood de désauthentification. La détection n'empêche pas l'attaque mais permet de prévenir le propriétaire que quelque d'anormal se passe. 
+A `WIDS` (`Wireless Intrusion Detection System`) can monitor management frames and alert when a deauthentication flood is detected. Detection doesn't prevent the attack but can notify the owner that something unusual is happening.
