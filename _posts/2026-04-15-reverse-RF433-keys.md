@@ -31,7 +31,7 @@ A very practical transceiver because it fits in your pocket. It can decode most 
 
 - **HackRF One**
 
-A transceiver covering `1 MHz` to `6 GHz`. Requires a PC. Very powerful for generating all kinds of signals, not just RF 433. Around 400€ with antennas.
+A transceiver covering `1.75MHz` to `6GHz`. Requires a PC. Very powerful for generating all kinds of signals, not just RF 433. Around 400€ with antennas.
 
 - **RTL-SDR**
 
@@ -41,15 +41,11 @@ Receive only. Low cost (~40€). Must be connected to a PC. Can go up to `1.7 GH
 
 - **URH (Universal Radio Hacker)**
 
-Lets you visualize, analyze, and decode captured radio signals.
-
-<a href="https://github.com/jopohl/urh">https://github.com/jopohl/urh</a>
+Lets you visualize, analyze, and decode captured radio signals. <a href="https://github.com/jopohl/urh">https://github.com/jopohl/urh</a>
 
 - **rtl_433**
 
-Automatic `RF 433 MHz` signal decoding tool. Supports hundreds of protocols and quickly identifies the encoding used.
-
-<a href="https://github.com/merbanan/rtl_433">https://github.com/merbanan/rtl_433</a>
+Automatic `RF 433 MHz` signal decoding tool. Supports hundreds of protocols and quickly identifies the encoding used. <a href="https://github.com/merbanan/rtl_433">https://github.com/merbanan/rtl_433</a>
 
 ## A - Classic RF433 Remote
 
@@ -69,11 +65,11 @@ URH lets us extract the bits from the radio signal sent by the remote.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/extraction-signal-urh-telecommande1.png){: width="950" .center}
 
-Here is a photo of the remote's `PCB`.
+Here is a photo of the remote's PCB.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/pcb-telecommande1.png){: width="450" .center}
 
-By opening the remote's `PCB`, we can read the name of the IC that handles radio signal encoding. It reads `STC1527`. A quick search online leads to the IC's datasheet: http://www.sc-tech.cn/en/SCT1527.pdf
+By opening the remote's PCB, we can read the name of the IC that handles radio signal encoding. It reads `STC1527`. A quick search online leads to the IC's datasheet: http://www.sc-tech.cn/en/SCT1527.pdf
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/sct1527-datasheet-1.png){: width="900" .center}
 
@@ -244,7 +240,7 @@ By analyzing several remotes from the same product line, a pattern quickly emerg
 
 **The combinatorial flaw**
 
-The device_id is encoded on `12 bits`, giving only 4096 possible combinations (`0x000` to `0xFFF`). That's terrible. The first remote we analyzed had `16⁵` possible device IDs.
+The device_id is encoded on `12 bits`, giving only 4096 possible combinations (`0x000` to `0xFFF`). That's terrible. The first remote we analyzed had `2²⁰` possible device IDs.
 
 A brute-force attack is therefore very feasible on this lock. Depending on the transmission delay and your luck, about forty minutes is enough to find a valid key.
 
@@ -355,15 +351,15 @@ If we press the same button 3 times, we observe 3 different signals:
 10011010010011011011010010010010011010011010010010010010011010010011010010010011011011010010011010011011011011011011010011010010011011011010011010011011010011010011010010010010010011010011011011011
 ```
 
-We'll follow the same reverse engineering process as before and start by analyzing the `PCB`.
+We'll follow the same reverse engineering process as before and start by analyzing the PCB.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/pcb-hcs300.png){: width="450" .center}
 
-On the main `IC` we can read `HCS300`. The datasheet is easy to find online and gives us everything we need to decode the signal.
+On the main IC we can read `HCS300`. The datasheet is easy to find online and gives us everything we need to decode the signal.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/hcs300-datasheet.png){: width="700" .center}
 
-The signal uses `PWM` encoding where each bit is represented by a different `duty cycle`.
+The signal uses `PWM` encoding where each bit is represented by a different duty cycle.
 
 The datasheet also gives us the field mapping:
 
@@ -429,7 +425,7 @@ Comparing the 3 signals, the encrypted part does change with each press:
 01001110000101000001001000111001 --> 0x9C482872
 ```
 
-The `serial number` stays the same:
+The serial number stays the same:
 
 ```
 0111111010011101011010100000 --> 0x056B97E
