@@ -37,7 +37,7 @@ That's not a problem: we can passively sniff `Wi-Fi` frames.
 
 In the `802.11` standard, access points periodically broadcast (several times per second) beacon frames. These frames contain the `SSID`, the `BSSID` (the `AP`'s `MAC` address), the channel, and some network parameters. They are transmitted in plaintext, regardless of data encryption (`WPA2`, `WPA3`).
 
-Similarly, the headers of `802.11` data frames contain the source and destination `MAC` addresses and the `BSSID`, in plaintext. A `Wi-Fi` adapter in monitor mode — like the well-known `Alpha card` — can observe all stations associated with an access point without knowing the network key.
+Similarly, the headers of `802.11` data frames contain the source and destination `MAC` addresses and the `BSSID`, in plaintext. A `Wi-Fi` adapter in monitor mode (like the well-known `Alpha card`) can observe all stations associated with an access point without knowing the network key.
 
 **Identify the access point**
 
@@ -76,9 +76,9 @@ If the second least significant bit of the first byte is `0`, then the `MAC` add
 
 In our case:
 
-`1C:4D:89:XX:XX:XX` — `0x1C` = `00011100`, the randomization bit = `0`. The `MAC` address is not randomized.
+`1C:4D:89:XX:XX:XX`: `0x1C` = `00011100`, the randomization bit = `0`. The `MAC` address is not randomized.
 
-`3A:3B:7D:XX:XX:XX` — `0x3A` = `00111010`, the randomization bit = `1`. The `MAC` address is randomized.
+`3A:3B:7D:XX:XX:XX`: `0x3A` = `00111010`, the randomization bit = `1`. The `MAC` address is randomized.
 
 Now that we know the address is not randomized, we can look up the manufacturer:
 
@@ -129,9 +129,9 @@ The `--deauth 0` parameter sends frames in an infinite loop. The camera disconne
   <source src="/assets/vid/neutraliser-camera/neutraliser-camera.mp4" type="video/mp4">
 </video>
 
-I intentionally blurred the left side of the video — the part showing my PC. The reason is simple: the command leaks information about my Wi-Fi network (`BSSID` and `SSID`) which, combined with an API like Wigle, could be used to find my address. The redaction in this video isn't effective enough, so I preferred the blunt approach and blurred the whole thing.
+I intentionally blurred the left side of the video, the part showing my PC. The reason is simple: the command leaks information about my Wi-Fi network (`BSSID` and `SSID`) which, combined with an API like Wigle, could be used to find my address. The redaction in this video isn't effective enough, so I preferred the blunt approach and blurred the whole thing.
 
-On the right, you can see the camera's mobile app. Before the attack, everything is fine — the camera is streaming and we can control it from the phone.
+On the right, you can see the camera's mobile app. Before the attack, everything is fine: the camera is streaming and we can control it from the phone.
 
 As soon as I launch the attack, the camera feed freezes. You can even see the camera's clock stop because it's no longer sending video.
 
@@ -139,7 +139,7 @@ Once the injection stops, the camera automatically reassociates with the access 
 
 ## Mitigations
 
-**802.11w — Protected Management Frames (PMF)**
+**802.11w: Protected Management Frames (PMF)**
 
 The `IEEE 802.11w` amendment adds protection for management frames. When this protection is negotiated between the `AP` and the client, spoofed deauthentication frames are rejected. This setting can be enabled in `WPA2`, and in `WPA3` it is on by default.
 

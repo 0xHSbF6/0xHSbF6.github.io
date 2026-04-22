@@ -132,7 +132,7 @@ rtl_433 -M hires -M level
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/rtl_433-1C2DA8.png){: width="950" .center}
 
-Note: the name `Akhan-100F14` is incorrect — `rtl_433` guesses the device name from the decoded signal and sometimes gets it wrong.
+Note: the name `Akhan-100F14` is incorrect, `rtl_433` guesses the device name from the decoded signal and sometimes gets it wrong.
 
 But it correctly found device ID `0x1C2DA` and button `0x8`.
 
@@ -334,7 +334,7 @@ I'm just saying...
 
 ### Reverse engineering the RF433 KeeLoq key
 
-You can see the signal is sent multiple times — again to guarantee reception even if there's interference.
+You can see the signal is sent multiple times, again to guarantee reception even if there's interference.
 
 ![alt text](/assets/img/posts/Reverse-engineering-télécommande-RF433/urh-rollingcode.png){: width="950" .center}
 
@@ -378,7 +378,7 @@ The signal is sent in two parts: a preamble and then the data.
 - preamble
 - data
 
-The three signals share the same preamble: `101010101010101010101`. There's no need to decode it — it's just a sync signal.
+The three signals share the same preamble: `101010101010101010101`. There's no need to decode it, it's just a sync signal.
 
 So now let's look at the data part of the first signal:
 

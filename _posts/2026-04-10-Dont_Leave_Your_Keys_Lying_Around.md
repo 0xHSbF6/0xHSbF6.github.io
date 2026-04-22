@@ -40,7 +40,7 @@ In our scenario, Toto left his keys unattended. You don't have a Flipper Zero or
 
 You can see:
 
-- Tag type: ISO 14443-3A — NXP Mifare Classic 1K
+- Tag type: ISO 14443-3A (NXP Mifare Classic 1K)
 - Serial number (UID): 48:A3:D3:E3
 - ATQA: 0x0004
 - SAK: 0x08
@@ -111,7 +111,7 @@ Both methods work: whether you present the cloned physical card or use the Flipp
 
 ### Readers that write to the badge
 
-Some access control systems don't just read the badge — they also write data to it on every use.
+Some access control systems don't just read the badge, they also write data to it on every use.
 This is the case for some Intratone systems used in residential buildings in France.
 These systems use a rolling counter:
 each time you use it, the reader increments a counter stored on the badge.

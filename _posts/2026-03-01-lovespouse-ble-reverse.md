@@ -198,7 +198,7 @@ tshark -r btsnooz_hci.log -Y "bthci_cmd.opcode == 0x2035" -x
 
 A new MAC address is used with each transmission. The toy passively listens to everything happening on advertising channels. We can use any random MAC address and the vibrator will still respond.
 
-**Final Payload — Activate Mode 1**
+**Final Payload: Activate Mode 1**
 
 We now have everything needed to make the toy vibrate.
 
@@ -215,7 +215,7 @@ sudo hcitool -i hci0 cmd 0x08 0x0039 01 01 00 00 00 00 00 00 00 00
 
 After sending these commands, the vibrating egg starts vibrating on mode 1.
 
-**Final Payload — Turn Off**
+**Final Payload: Turn Off**
 
 In addition to the shutdown payload, a final packet sent after a short sleep stops the advertising transmission:
 

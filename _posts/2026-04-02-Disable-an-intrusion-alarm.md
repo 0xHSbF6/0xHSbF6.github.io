@@ -88,7 +88,7 @@ You'll then need to decode the signals. For that, check out my article on RF433 
 
 **Flipper Zero**
 
-Even simpler — let's use every hacker's favorite penguin (lol). It's a handy Swiss Army knife. Compared to the previous setup, it's more compact and has great battery life without needing a power bank.
+Even simpler, let's use every hacker's favorite penguin (lol). It's a handy Swiss Army knife. Compared to the previous setup, it's more compact and has great battery life without needing a power bank.
 
 Downside: the range is limited to about 5 meters on `433 MHz`.
 
@@ -126,7 +126,7 @@ When the occupants are home and awake, the motion sensor signal is emitted frequ
 
 **- Remote control / keypad**
 
-Another signal appears only once or twice a day, at the times when occupants leave and return — this is the arm or disarm signal.
+Another signal appears only once or twice a day, at the times when occupants leave and return: this is the arm or disarm signal.
 
 The arm and disarm signals look very similar, differing by just one or two bytes. This is a recognizable pattern that helps identify a remote control or keypad signal. We'll decode them in the next section.
 
@@ -203,7 +203,7 @@ The replay attack to disarm the alarm works, but it has two drawbacks:
 
 ![alt text](/assets/img/posts/neutraliser-alarme/log-alarme.png){: width="400" .center}
 
-This is why it can be more useful to neutralize the alarm without disarming it — by preventing sensors from communicating with the panel.
+This is why it can be more useful to neutralize the alarm without disarming it, by preventing sensors from communicating with the panel.
 
 ### How it works
 
@@ -253,7 +253,7 @@ That said, rolling code isn't always implemented correctly... And when it isn't,
 
 ### Multi-channel / Frequency Hopping (FHSS)
 
-Some high-end alarms (`Ajax` or certain `Daitem` models) communicate across multiple channels in the 868 MHz band, hopping between frequencies on each transmission (`FHSS` — Frequency Hopping Spread Spectrum).
+Some high-end alarms (`Ajax` or certain `Daitem` models) communicate across multiple channels in the 868 MHz band, hopping between frequencies on each transmission (FHSS: Frequency Hopping Spread Spectrum).
 
 This makes signal interception more complex because you need to capture on all possible channels simultaneously.
 
