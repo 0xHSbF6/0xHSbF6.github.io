@@ -164,7 +164,7 @@ Ces valeurs dépendent du chipset par conséquent, elles peuvent changer en fonc
 
 - Si nous avons de la chance, notre cible porte une montre connectée, il est très probable qu'elle n'implémente pas de randomisation MAC, nous pouvons donc avoir un fingerprint plus précis.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/fingerprint-fort-probes-directed-cav.png){: width=500" .center}
+![alt text](/assets/img/posts/How-to-spy-Toto/fingerprint-fort-probes-directed-cav.png){: width=400" .center}
 
 ## Retrouver l'adresse de Toto
 
@@ -176,7 +176,7 @@ https://wigle.net/
 
 Avec leur API, vous pouvez assez souvent localiser approximativement le SSID, via les coordonnées GPS où il a été vu par quelqu'un qui fait du Wardriving. Vous obtenez les coordonnées GPS ainsi que la date et l'heure de la dernière apparition.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/wigle1.png){: width=500" .center}
+![alt text](/assets/img/posts/How-to-spy-Toto/wigle1.png){: width=400" .center}
 
 Petit bonus ici : l'adresse MAC n'étant pas randomisée, en plus de localiser le réseau, nous avons aussi le constructeur du routeur (OUI), mais pas nécessairement le modèle exact.
 
@@ -194,7 +194,7 @@ Ce n'est donc pas une solution magique.
 
 Nous avons trouvé l’adresse où habite notre target. Nous avons trouvé des IoP intéressants. La suite de notre mission consiste maintenant à installer des implants près de l’appart de Toto et près de son agence.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/implants.png){: width=500" .center}
+![alt text](/assets/img/posts/How-to-spy-Toto/implants.png){: width=350" .center}
 
 Pourquoi ici ? Parce qu'il est facile d'y planquer des choses et de les récupérer après...
 
@@ -247,9 +247,9 @@ Ici, nous avons extrait très facilement la mémoire flash par câble USB.
 
 Pour JTAG openocd avec le FT232H suffit largement. Des choses très amusantes peuvent être faites avec JTAG. Par exemple dumper la RAM de mon ESP32 pourtant avec flash encryption et récupérer des secrets mTLS... Je dis ça je dis rien...
 
-https://github.com/openocd-org/openocd
+[](https://github.com/openocd-org/openocd)
 
-![alt text](/assets/img/posts/How-to-spy-Toto/FT232H.png){: width=500" .center}
+![alt text](/assets/img/posts/How-to-spy-Toto/FT232H.png){: width=300" .center}
 
 L’idéal est donc d’activer a minima :
 - le chiffrement de la flash (flash encryption) 
@@ -281,7 +281,9 @@ Beaucoup de tutos ajoutent iot:* sur * « pour que ça marche ». C’est une ma
 
 Très mauvais conseil à suivre sur cette chaine youtube
 
-![alt text](/assets/img/posts/How-to-spy-Toto/example-SDK-AWS-subscribe.png){: width=500" .center}
+![alt text](/assets/img/posts/How-to-spy-Toto/very-bad-advice.png){: width=500" .center}
+
+![alt text](image.png)
 
 https://www.youtube.com/watch?v=59xppRDOEZE
 
@@ -307,13 +309,13 @@ On retrouve la table des partitions. Par defaut elle se trouve à l'offset 0x800
 
 Une fois la table des partitions en main, on peut extraire la NVS et aller chercher les credentials Wi-Fi qui sont stocké par défaut.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/nvs-creds1.png){: width=500" .center}
+![alt text](/assets/img/posts/How-to-spy-Toto/nvs-creds1.png){: width=450" .center}
 
-![alt text](/assets/img/posts/How-to-spy-Toto/nvs-creds2.png){: width=500" .center}
+![alt text](/assets/img/posts/How-to-spy-Toto/nvs-creds2.png){: width=400" .center}
 
 Qui dit SSID Wi-Fi dit WiGLE, et il serait couillon que votre target trouve l'adresse où l'implant a été développé...
 
-![alt text](/assets/img/posts/How-to-spy-Toto/nvs-creds3.png){: width=500" .center}
+![alt text](/assets/img/posts/How-to-spy-Toto/nvs-creds3.png){: width=400" .center}
 
 Si malheureusement notre ESP32 est récupéré et que son nouveau propriétaire ou les forces de l'ordre arrivent à extraire les secrets, il pourra usurper l’identité de l’implant et publier de fausses données sur les topics autorisés. Cela peut devenir gênant.
 
