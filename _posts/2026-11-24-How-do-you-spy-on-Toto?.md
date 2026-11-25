@@ -36,7 +36,7 @@ Ceci est un prétexte pour passer quelques minutes avec Toto.
 
 Dans votre poche, une simple ESP32 qui va capturer passivement tous les paquets Wi-Fi autour de vous. L'ESP32 va filtrer tous ces paquets pour ne garder que les Probe Requests dirigées.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/directed-probe.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/directed-probe.png){: width=600" .center}
 
 Une Probe Request dirigée est une trame de management 802.11, en clair. Elle sert entre autres au device à :
 
@@ -47,10 +47,10 @@ Même si le device est déjà connecté à un AP, il continuera la plupart du te
 
 La fréquence d'émission dépend de nombreux paramètres, dont l'OS, mais en général elles sont émises toutes les quelques dizaines de secondes (souvent 15 à 60 s, parfois plusieurs minutes).
 
-Le téléphone conserve une PNL (Preferred Network List) les réseaux auxquels il s'est déjà connecté. Elle contient souvent :
-- la maison (box : Livebox-, Freebox-, SFR_, Bbox-…) ;
-- le travail ;
-- mais aussi des réseaux publics ou fréquentés.
+Le téléphone conserve une PNL (Preferred Network List) les réseaux auxquels il s'est déjà connecté. Elle contient souvent les SSID :
+- de votre box (box : Livebox-, Freebox-, SFR_, Bbox-…)
+- routeur du travail
+- mais aussi des réseaux publics
 
 À  l'intérieur d'une directed probe, on retrouve un certain nombre d'éléments. Le plus intéressant pour nous est le SSID du point d'accès recherché par le téléphone de Toto
 
@@ -62,7 +62,7 @@ Idéalement, faites l'expérience deux fois à deux endroits différents (par ex
 
 Après avoir fait un différence des directed probes récupérées dans l'agence de Toto et le bistrot d'à côté, nous avons trouvé ceci :
 
-![alt text](/assets/img/posts/How-to-spy-Toto/fingerprint-probe-directed-cav.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/fingerprint-probe-directed-cav.png){: width=600" .center}
 
 
 Cette directed probe, nous donne deux SSID depuis le même équipement (même MAC). C'est donc une information qui est très intéressante. Nous pouvons donc relier ces deux SSID à Toto. Nous avons donc notre IoP
@@ -95,11 +95,11 @@ type (bits 2-3) :
 
 Trame de management (directed probe)
 
-![alt text](/assets/img/posts/How-to-spy-Toto/wireshark-directed-probe.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wireshark-directed-probe.png){: width=600" .center}
 
 Trame de management (beacon)
 
-![alt text](/assets/img/posts/How-to-spy-Toto/wireshark-beacon.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wireshark-beacon.png){: width=600" .center}
 
 Par exemple ici, si nous reprenons la DP associée à notre target :
 
@@ -125,7 +125,7 @@ Ces infos peuvent parfois nous aider à différencier deux téléphones de marqu
 Quelques exemples d'informations qu'il est intéressant de trouver dans une DP:
 
 - **HT Capabilities** : indique le support 802.11n (Wi-Fi 4).
-- **VHT Capabilities** : MCS/NSS définissent la modulation/codage et le nombre de flux spatiaux ; ces valeurs peuvent varier selon le chipset et le firmware.
+- **VHT Capabilities** : MCS/NSS définissent la modulation/codage et le nombre de flux spatiaux. Ces valeurs peuvent varier selon le chipset et le firmware.
 - **Vendor Specific** : contient un IE vendor qui peut parfois nous indiquer le constructeur. Il est très souvent utilisé pour différencier un PC d'un smartphone.
 - **HE 6 GHz Band Capabilities** : indique un support 6 GHz (Wi-Fi 6E).
 - **EHT Capabilities** : indique Wi-Fi 7 (802.11be).
@@ -164,7 +164,7 @@ Ces valeurs dépendent du chipset par conséquent, elles peuvent changer en fonc
 
 - Si nous avons de la chance, notre cible porte une montre connectée, il est très probable qu'elle n'implémente pas de randomisation MAC, nous pouvons donc avoir un fingerprint plus précis.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/fingerprint-fort-probes-directed-cav.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/fingerprint-fort-probes-directed-cav.png){: width=500" .center}
 
 ## Retrouver l'adresse de Toto
 
@@ -172,15 +172,15 @@ Nous avons rempli la moitié de notre objectif, nous sommes en mesure de déterm
 
 Bonne nouvelle, il existe une solution technique alimentée par les amateurs de Wardriving : WiGLE
 
-https://wigle.net/
+<https://wigle.net/>
 
 Avec leur API, vous pouvez assez souvent localiser approximativement le SSID, via les coordonnées GPS où il a été vu par quelqu'un qui fait du Wardriving. Vous obtenez les coordonnées GPS ainsi que la date et l'heure de la dernière apparition.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/wigle1.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wigle1.png){: width=400" .center}
 
 Petit bonus ici : l'adresse MAC n'étant pas randomisée, en plus de localiser le réseau, nous avons aussi le constructeur du routeur (OUI), mais pas nécessairement le modèle exact.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/bonus-mac-identifier.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/bonus-mac-identifier.png){: width=600" .center}
 
 **Attention, il y a de nombreux faux positifs : on observe souvent un historique incohérent avec des apparitions à de nombreux endroits. Parfois aussi, nous ne trouvons rien... Soit parce que le SSID n'a jamais été capturé, soit parce qu'une demande pour le retirer de la base WiGLE a été faite.**
 
@@ -194,7 +194,7 @@ Ce n'est donc pas une solution magique.
 
 Nous avons trouvé l’adresse où habite notre target. Nous avons trouvé des IoP intéressants. La suite de notre mission consiste maintenant à installer des implants près de l’appart de Toto et près de son agence.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/implants.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/implants.png){: width=350" .center}
 
 Pourquoi ici ? Parce qu'il est facile d'y planquer des choses et de les récupérer après...
 
@@ -214,7 +214,7 @@ Le broker :
 
 **mTLS et AWS IoT Core**
 mTLS (mutual TLS) signifie que les deux parties présentent un certificat :
-- le serveur prouve son identité au client ;
+- le serveur prouve son identité au client
 - le client prouve son identité au serveur.
   
 Dans AWS IoT Core :
@@ -222,8 +222,6 @@ Dans AWS IoT Core :
 2. Le client présente son certificat X.509 et sa private key.
 3. AWS IoT Core vérifie que le certificat client est signé par une CA de confiance.
 4. Une IoT policy attachée au certificat autorise ensuite les actions MQTT.
-   
-Point important : mTLS authentifie, la policy autorise. Le certificat ne donne pas de droits en soi ; c’est la policy qui décide de ce que le client peut faire.
 
 **Les besoins pour nos implants**
 
@@ -245,13 +243,13 @@ En fonction de la configuration de l'ESP32, nous pouvons extraire le firware via
 
 Ici, nous avons extrait très facilement la mémoire flash par câble USB.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/dump-flash.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/dump-flash.png){: width=600" .center}
 
 Pour JTAG openocd avec le FT232H suffit largement. Des choses très amusantes peuvent être faites avec JTAG. Par exemple dumper la RAM de mon ESP32 pourtant avec flash encryption et récupérer des secrets mTLS... Je dis ça je dis rien...
 
-https://github.com/openocd-org/openocd
+<https://github.com/openocd-org/openocd>
 
-![alt text](/assets/img/posts/How-to-spy-Toto/FT232H.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/FT232H.png){: width=200" .center}
 
 L’idéal est donc d’activer a minima :
 - le chiffrement de la flash (flash encryption) 
@@ -264,7 +262,7 @@ L’idéal est donc d’activer a minima :
 
 Notre ESP32 envoie maintenant les IoP en MQTT. Côté PC, nous pouvons utiliser un client MQTT ou l’AWS IoT Device SDK v2 pour recevoir les paquets.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/example-SDK-AWS-subscribe.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/example-SDK-AWS-subscribe.png){: width=600" .center}
 
 **Un peu de bonne pratique**
 
@@ -283,14 +281,14 @@ Beaucoup de tutos ajoutent iot:* sur * « pour que ça marche ». C’est une ma
 
 Très mauvais conseil à suivre sur cette chaine youtube
 
-![alt text](/assets/img/posts/How-to-spy-Toto/example-SDK-AWS-subscribe.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/very-bad-advice.png){: width=600" .center}
 
-https://www.youtube.com/watch?v=59xppRDOEZE
+<https://www.youtube.com/watch?v=59xppRDOEZE>
 
 Ce n'est pas la seule mauvaise ressource et les LLM font souvent la même chose si on ne lui précise pas les choses correctement (parfois même quand on lui demande)
 
 L’idéal est d’avoir une identité par rôle :
-- une identité pour l’ESP32, avec une policy publish-only + Connect ;
+- une identité pour l’ESP32, avec une policy publish-only + Connect
 - une identité pour le PC, avec une policy subscribe + receive + Connect.
 
 **Un peu de forensique**
@@ -301,21 +299,22 @@ Si vous utilisez l'IDE Arduino ou ESP-IDF (ce que je vous déconseille), l'ESP32
 
 Une fois la flash extraite si vous utilisez esp-idf ou l'IDE Arduino, il sera très facile d'extraire la table des partitions et la nvs avec l'outil suivant:
 
-https://github.com/BlackVS/esp32knife
+<https://github.com/BlackVS/esp32knife>
+
 
 On retrouve la table des partitions. Par defaut elle se trouve à l'offset 0x8000 quand on utilise esp-idf. Elle pourrait même être extraite à la main...
 
-![alt text](/assets/img/posts/How-to-spy-Toto/partitions-table.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/partitions-table.png){: width=600" .center}
 
 Une fois la table des partitions en main, on peut extraire la NVS et aller chercher les credentials Wi-Fi qui sont stocké par défaut.
 
-![alt text](/assets/img/posts/How-to-spy-Toto/nvs-creds1.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds1.png){: width=550" .center}
 
-![alt text](/assets/img/posts/How-to-spy-Toto/nvs-creds2.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds2.png){: width=550" .center}
 
 Qui dit SSID Wi-Fi dit WiGLE, et il serait couillon que votre target trouve l'adresse où l'implant a été développé...
 
-![alt text](/assets/img/posts/How-to-spy-Toto/nvs-creds3.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds3.png){: width=400" .center}
 
 Si malheureusement notre ESP32 est récupéré et que son nouveau propriétaire ou les forces de l'ordre arrivent à extraire les secrets, il pourra usurper l’identité de l’implant et publier de fausses données sur les topics autorisés. Cela peut devenir gênant.
 
