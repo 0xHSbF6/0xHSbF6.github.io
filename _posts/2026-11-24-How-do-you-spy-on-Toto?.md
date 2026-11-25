@@ -1,7 +1,4 @@
 
-
-# Comment espionner Toto ? *
-
 Savez-vous qu'il est possible, avec très peu de moyens et sans utiliser de tracker GPS, de savoir si vous êtes à un endroit précis ?
 
 Savez-vous qu'il est parfois possible de retrouver l'adresse d'une personne en restant quelques minutes à côté d'elle (sans lui demander son adresse) et sans utiliser d'OSINT... ?
@@ -176,11 +173,11 @@ Bonne nouvelle, il existe une solution technique alimentée par les amateurs de 
 
 Avec leur API, vous pouvez assez souvent localiser approximativement le SSID, via les coordonnées GPS où il a été vu par quelqu'un qui fait du Wardriving. Vous obtenez les coordonnées GPS ainsi que la date et l'heure de la dernière apparition.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wigle1.png){: width=400" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wigle1.png){: width=350" .center}
 
 Petit bonus ici : l'adresse MAC n'étant pas randomisée, en plus de localiser le réseau, nous avons aussi le constructeur du routeur (OUI), mais pas nécessairement le modèle exact.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/bonus-mac-identifier.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/bonus-mac-identifier.png){: width=700" .center}
 
 **Attention, il y a de nombreux faux positifs : on observe souvent un historique incohérent avec des apparitions à de nombreux endroits. Parfois aussi, nous ne trouvons rien... Soit parce que le SSID n'a jamais été capturé, soit parce qu'une demande pour le retirer de la base WiGLE a été faite.**
 
@@ -194,7 +191,7 @@ Ce n'est donc pas une solution magique.
 
 Nous avons trouvé l’adresse où habite notre target. Nous avons trouvé des IoP intéressants. La suite de notre mission consiste maintenant à installer des implants près de l’appart de Toto et près de son agence.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/implants.png){: width=350" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/implants.png){: width=300" .center}
 
 Pourquoi ici ? Parce qu'il est facile d'y planquer des choses et de les récupérer après...
 
@@ -249,7 +246,7 @@ Pour JTAG openocd avec le FT232H suffit largement. Des choses très amusantes pe
 
 <https://github.com/openocd-org/openocd>
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/FT232H.png){: width=200" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/FT232H.png){: width=100" .center}
 
 L’idéal est donc d’activer a minima :
 - le chiffrement de la flash (flash encryption) 
