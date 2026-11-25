@@ -33,7 +33,7 @@ Ceci est un prétexte pour passer quelques minutes avec Toto.
 
 Dans votre poche, une simple ESP32 qui va capturer passivement tous les paquets Wi-Fi autour de vous. L'ESP32 va filtrer tous ces paquets pour ne garder que les Probe Requests dirigées.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/directed-probe.png){: width="600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/directed-probe.png){: width="700" .center}
 
 Une Probe Request dirigée est une trame de management 802.11, en clair. Elle sert entre autres au device à :
 
@@ -59,7 +59,7 @@ Idéalement, faites l'expérience deux fois à deux endroits différents (par ex
 
 Après avoir fait un différence des directed probes récupérées dans l'agence de Toto et le bistrot d'à côté, nous avons trouvé ceci :
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/fingerprint-probe-directed-cav.png){: width=600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/fingerprint-probe-directed-cav.png){: width=800" .center}
 
 
 Cette directed probe, nous donne deux SSID depuis le même équipement (même MAC). C'est donc une information qui est très intéressante. Nous pouvons donc relier ces deux SSID à Toto. Nous avons donc notre IoP
@@ -92,7 +92,7 @@ type (bits 2-3) :
 
 Trame de management (directed probe)
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wireshark-directed-probe.png){: width="600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wireshark-directed-probe.png){: width="800" .center}
 
 Trame de management (beacon)
 
@@ -161,7 +161,7 @@ Ces valeurs dépendent du chipset par conséquent, elles peuvent changer en fonc
 
 - Si nous avons de la chance, notre cible porte une montre connectée, il est très probable qu'elle n'implémente pas de randomisation MAC, nous pouvons donc avoir un fingerprint plus précis.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/fingerprint-fort-probes-directed-cav.png){: width="500" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/fingerprint-fort-probes-directed-cav.png){: width="700" .center}
 
 ## Retrouver l'adresse de Toto
 
@@ -173,11 +173,11 @@ Bonne nouvelle, il existe une solution technique alimentée par les amateurs de 
 
 Avec leur API, vous pouvez assez souvent localiser approximativement le SSID, via les coordonnées GPS où il a été vu par quelqu'un qui fait du Wardriving. Vous obtenez les coordonnées GPS ainsi que la date et l'heure de la dernière apparition.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wigle1.png){: width="350" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wigle1.png){: width="500" .center}
 
 Petit bonus ici : l'adresse MAC n'étant pas randomisée, en plus de localiser le réseau, nous avons aussi le constructeur du routeur (OUI), mais pas nécessairement le modèle exact.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/bonus-mac-identifier.png){: width="700" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/bonus-mac-identifier.png){: width="750" .center}
 
 **Attention, il y a de nombreux faux positifs : on observe souvent un historique incohérent avec des apparitions à de nombreux endroits. Parfois aussi, nous ne trouvons rien... Soit parce que le SSID n'a jamais été capturé, soit parce qu'une demande pour le retirer de la base WiGLE a été faite.**
 
@@ -191,7 +191,7 @@ Ce n'est donc pas une solution magique.
 
 Nous avons trouvé l’adresse où habite notre target. Nous avons trouvé des IoP intéressants. La suite de notre mission consiste maintenant à installer des implants près de l’appart de Toto et près de son agence.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/implants.png){: width="300" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/implants.png){: width="800" .center}
 
 Pourquoi ici ? Parce qu'il est facile d'y planquer des choses et de les récupérer après...
 
@@ -240,7 +240,7 @@ En fonction de la configuration de l'ESP32, nous pouvons extraire le firware via
 
 Ici, nous avons extrait très facilement la mémoire flash par câble USB.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/dump-flash.png){: width="600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/dump-flash.png){: width="800" .center}
 
 Pour JTAG openocd avec le FT232H suffit largement. Des choses très amusantes peuvent être faites avec JTAG. Par exemple dumper la RAM de mon ESP32 pourtant avec flash encryption et récupérer des secrets mTLS... Je dis ça je dis rien...
 
@@ -259,7 +259,7 @@ L’idéal est donc d’activer a minima :
 
 Notre ESP32 envoie maintenant les IoP en MQTT. Côté PC, nous pouvons utiliser un client MQTT ou l’AWS IoT Device SDK v2 pour recevoir les paquets.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/example-SDK-AWS-subscribe.png){: width="600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/example-SDK-AWS-subscribe.png){: width="800" .center}
 
 **Un peu de bonne pratique**
 
@@ -278,7 +278,7 @@ Beaucoup de tutos ajoutent iot:* sur * « pour que ça marche ». C’est une ma
 
 Très mauvais conseil à suivre sur cette chaine youtube
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/very-bad-advice.png){: width="600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/very-bad-advice.png){: width="800" .center}
 
 <https://www.youtube.com/watch?v=59xppRDOEZE>
 
@@ -305,13 +305,13 @@ On retrouve la table des partitions. Par defaut elle se trouve à l'offset 0x800
 
 Une fois la table des partitions en main, on peut extraire la NVS et aller chercher les credentials Wi-Fi qui sont stocké par défaut.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds1.png){: width="500" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds1.png){: width="700" .center}
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds2.png){: width="500" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds2.png){: width="700" .center}
 
 Qui dit SSID Wi-Fi dit WiGLE, et il serait couillon que votre target trouve l'adresse où l'implant a été développé...
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds3.png){: width="300" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds3.png){: width="600" .center}
 
 Si malheureusement notre ESP32 est récupéré et que son nouveau propriétaire ou les forces de l'ordre arrivent à extraire les secrets, il pourra usurper l’identité de l’implant et publier de fausses données sur les topics autorisés. Cela peut devenir gênant.
 
