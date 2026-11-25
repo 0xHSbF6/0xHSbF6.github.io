@@ -311,7 +311,7 @@ Une fois la table des partitions en main, on peut extraire la NVS et aller cherc
 
 Qui dit SSID Wi-Fi dit WiGLE, et il serait couillon que votre target trouve l'adresse où l'implant a été développé...
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds3.png){: width="600" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds3.png){: width="1000" .center}
 
 Si malheureusement notre ESP32 est récupéré et que son nouveau propriétaire ou les forces de l'ordre arrivent à extraire les secrets, il pourra usurper l’identité de l’implant et publier de fausses données sur les topics autorisés. Cela peut devenir gênant.
 
