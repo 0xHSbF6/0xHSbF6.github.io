@@ -33,7 +33,7 @@ Ceci est un prétexte pour passer quelques minutes avec Toto.
 
 Dans votre poche, une simple ESP32 qui va capturer passivement tous les paquets Wi-Fi autour de vous. L'ESP32 va filtrer tous ces paquets pour ne garder que les Probe Requests dirigées.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/directed-probe.png){: width="700" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/directed-probe.png){: width="850" .center}
 
 Une Probe Request dirigée est une trame de management 802.11, en clair. Elle sert entre autres au device à :
 
@@ -92,7 +92,7 @@ type (bits 2-3) :
 
 Trame de management (directed probe)
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wireshark-directed-probe.png){: width="800" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wireshark-directed-probe.png){: width="1000" .center}
 
 Trame de management (beacon)
 
@@ -161,7 +161,7 @@ Ces valeurs dépendent du chipset par conséquent, elles peuvent changer en fonc
 
 - Si nous avons de la chance, notre cible porte une montre connectée, il est très probable qu'elle n'implémente pas de randomisation MAC, nous pouvons donc avoir un fingerprint plus précis.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/fingerprint-fort-probes-directed-cav.png){: width="700" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/fingerprint-fort-probes-directed-cav.png){: width="900" .center}
 
 ## Retrouver l'adresse de Toto
 
@@ -173,11 +173,11 @@ Bonne nouvelle, il existe une solution technique alimentée par les amateurs de 
 
 Avec leur API, vous pouvez assez souvent localiser approximativement le SSID, via les coordonnées GPS où il a été vu par quelqu'un qui fait du Wardriving. Vous obtenez les coordonnées GPS ainsi que la date et l'heure de la dernière apparition.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wigle1.png){: width="500" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wigle1.png){: width="700" .center}
 
 Petit bonus ici : l'adresse MAC n'étant pas randomisée, en plus de localiser le réseau, nous avons aussi le constructeur du routeur (OUI), mais pas nécessairement le modèle exact.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/bonus-mac-identifier.png){: width="750" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/bonus-mac-identifier.png){: width="850" .center}
 
 **Attention, il y a de nombreux faux positifs : on observe souvent un historique incohérent avec des apparitions à de nombreux endroits. Parfois aussi, nous ne trouvons rien... Soit parce que le SSID n'a jamais été capturé, soit parce qu'une demande pour le retirer de la base WiGLE a été faite.**
 
@@ -191,7 +191,7 @@ Ce n'est donc pas une solution magique.
 
 Nous avons trouvé l’adresse où habite notre target. Nous avons trouvé des IoP intéressants. La suite de notre mission consiste maintenant à installer des implants près de l’appart de Toto et près de son agence.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/implants.png){: width="800" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/implants.png){: width="1200" .center}
 
 Pourquoi ici ? Parce qu'il est facile d'y planquer des choses et de les récupérer après...
 
