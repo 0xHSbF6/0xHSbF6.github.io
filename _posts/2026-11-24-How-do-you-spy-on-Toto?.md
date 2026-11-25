@@ -191,7 +191,7 @@ Ce n'est donc pas une solution magique.
 
 Nous avons trouvé l’adresse où habite notre target. Nous avons trouvé des IoP intéressants. La suite de notre mission consiste maintenant à installer des implants près de l’appart de Toto et près de son agence.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/implants.png){: width="800" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/implants.png){: width="600" .center}
 
 Pourquoi ici ? Parce qu'il est facile d'y planquer des choses et de les récupérer après...
 
@@ -245,8 +245,6 @@ Ici, nous avons extrait très facilement la mémoire flash par câble USB.
 Pour JTAG openocd avec le FT232H suffit largement. Des choses très amusantes peuvent être faites avec JTAG. Par exemple dumper la RAM de mon ESP32 pourtant avec flash encryption et récupérer des secrets mTLS... Je dis ça je dis rien...
 
 <https://github.com/openocd-org/openocd>
-
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/FT232H.png){: width="200" .center}
 
 L’idéal est donc d’activer a minima :
 - le chiffrement de la flash (flash encryption) 
@@ -311,7 +309,7 @@ Une fois la table des partitions en main, on peut extraire la NVS et aller cherc
 
 Qui dit SSID Wi-Fi dit WiGLE, et il serait couillon que votre target trouve l'adresse où l'implant a été développé...
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds3.png){: width="700" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds3.png){: width="600" .center}
 
 Si malheureusement notre ESP32 est récupéré et que son nouveau propriétaire ou les forces de l'ordre arrivent à extraire les secrets, il pourra usurper l’identité de l’implant et publier de fausses données sur les topics autorisés. Cela peut devenir gênant.
 
