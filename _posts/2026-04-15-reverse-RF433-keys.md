@@ -259,7 +259,9 @@ GAP1_US    =   805  # bit 1
 
 def segment(on, duration_us):
     n = int(round(duration_us * SAMPLE_RATE / 1_000_000))
-    i_val = np.uint8(127) if on else np.uint8(0)
+    i_val = np.uint8(127) 
+    if on 
+    else np.uint8(0)
     return np.column_stack([np.full(n, i_val), np.zeros(n, np.uint8)]).flatten()
 
 def generate(device_id, action, n_repeat=27):
@@ -271,7 +273,9 @@ def generate(device_id, action, n_repeat=27):
         frames.append(segment(False, GAP1_US))
         for bit in bits:
             frames.append(segment(True,  PULSE_US))
-            frames.append(segment(False, GAP1_US if bit == '1' else GAP0_US))
+            frames.append(segment(False, GAP1_US 
+            if bit == '1' 
+            else GAP0_US))
     frames.append(segment(False, 10_000))
     return np.concatenate(frames)
 
