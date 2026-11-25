@@ -1,6 +1,6 @@
 
 
-# Comment espionner Toto ? 
+# Comment espionner Toto ? *
 
 Savez-vous qu'il est possible, avec très peu de moyens et sans utiliser de tracker GPS, de savoir si vous êtes à un endroit précis ?
 
@@ -308,13 +308,13 @@ On retrouve la table des partitions. Par defaut elle se trouve à l'offset 0x800
 
 Une fois la table des partitions en main, on peut extraire la NVS et aller chercher les credentials Wi-Fi qui sont stocké par défaut.
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds1.png){: width=550" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds1.png){: width=500" .center}
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds2.png){: width=550" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds2.png){: width=500" .center}
 
 Qui dit SSID Wi-Fi dit WiGLE, et il serait couillon que votre target trouve l'adresse où l'implant a été développé...
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds3.png){: width=400" .center}
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds3.png){: width=300" .center}
 
 Si malheureusement notre ESP32 est récupéré et que son nouveau propriétaire ou les forces de l'ordre arrivent à extraire les secrets, il pourra usurper l’identité de l’implant et publier de fausses données sur les topics autorisés. Cela peut devenir gênant.
 
