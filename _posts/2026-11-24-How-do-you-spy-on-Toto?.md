@@ -323,12 +323,12 @@ You might say that if someone can just send fake data to sabotage our mission, t
 
 ## Conclusion
 
-**First question: is it easy to tell if someone is at a specific location without a GPS tracker?**
+**Could that person find out where you live just by standing near you for a few minutes with an ESP32 ?**
+
+It is more difficult.. WiGLE can sometimes give an exact address, but often provides an approximate location and sometimes completely wrong. The best approach is to keep only the most recent WiGLE results and, ideally, have a history that all points to the same place.
+
+**Can someone with very basic equipment, and without a GPS tracker, tell if you're at home ?**
 
 Yes. With a simple ESP32, a few minutes on site and Wi-Fi enabled on the target’s phone, you can capture directed probes. If you see an SSID specific to Toto (his home router, his office router, etc.), that is a strong sign he is nearby.. Seeing the same SSIDs again at another place makes it stronger
 
 This isn’t conclusive proof, as several devices may share the same SSID, but it’s often enough to tell whether our target has been in the area.
-
-**Second question: can we find out their address by staying near them for a few minutes, without using OSINT?**
-
-It is more difficult.. WiGLE can sometimes give an exact address, but often provides an approximate location and sometimes completely wrong. The best approach is to keep only the most recent WiGLE results and, ideally, have a history that all points to the same place.
