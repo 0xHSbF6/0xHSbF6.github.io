@@ -5,9 +5,9 @@ categories: [IoT]
 tags: [Wi-Fi, tracking, ESP32]
 ---
 
-Can someone with very basic equipment, and without a GPS tracker, tell if you're at home ?
-
 Could that person find out where you live just by standing near you for a few minutes with an ESP32 ?
+
+Can someone with very basic equipment, and without a GPS tracker, tell if you're at home ?
 
 ## Your mission
 
