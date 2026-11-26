@@ -5,9 +5,9 @@ categories: [IoT]
 tags: [Wi-Fi, tracking, ESP32]
 ---
 
-Is it possible, with very limited resources and without using a GPS tracker, to determine whether you are at a specific location?
+Can someone with very basic equipment, and without a GPS tracker, tell if you're at home ?
 
-Is it possible to find out someone’s address by standing next to them for a few minutes (without asking for their address) and without using OSINT...?
+Could that person find out where you live just by standing near you for a few minutes with an ESP32 ?
 
 ## Your mission
 
