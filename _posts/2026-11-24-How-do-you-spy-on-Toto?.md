@@ -33,13 +33,11 @@ I’m not a stalker...
 
 ## Proximity indicators: directed probe request
 
-
 To complete your mission, you’ll go to Toto’s coffin shop and explain to him that your grandmother Monique has just passed away and that you’re there to organise her funeral.
 
 This is just an excuse to spend a few minutes with Toto.
 
 In your pocket, a simple ESP32 C5 that will passively capture all the Wi-Fi packets around you. The ESP32 will filter all these packets to retain only the directed probes
-
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/directed-probe.png){: width="850" .center}
 
@@ -101,7 +99,6 @@ Wi-Fi management frame (directed probe):
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wireshark-directed-probe.png){: width="1000" .center}
 
-
 Wi-Fi management frame (beacon): 
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wireshark-beacon.png){: width=600" .center}
@@ -162,6 +159,7 @@ that the device implements the following features (whose names are utterly unpro
 > Interpretation: 5 GHz 40/80 MHz, LDPC, NDP 4x LTF, SU beamformee up to 8 STS, codebooks 42/75, trigger feedbacks, PPE thresholds, and 1024-QAM on resource units smaller than 242 subcarriers. No 160 MHz, no 80+80, no STBC, no DCM, no MU-MIMO.
 
 These values depend on the chipset; consequently, they may vary from one phone to another, and this can strengthen our fingerprint.
+
 **Important information:**
 
 - MAC randomisation has been used for several years. It works differently depending on the OS, version and frame type. For the SSID IoP, this does not matter: the SSID does not change for a given network. However, the MAC address can help link several frames together.
@@ -204,13 +202,12 @@ Why here? Because it’s easy to hide things here and retrieve them later…
 
 We can use our ESP32 with a small 4G module and an external battery. The implant will will be to passively capture all Wi-Fi management frames, keep only the directed Probe Requests, and send them to us.
 
-
 From our workstation, we will apply further filtering to focus solely on the IoPs from our target. We can also carry out this filtering directly on the ESP32. Both options are valid.
 
 In order to receive information in real time on our PC, one of the simplest solutions to implement is MQTT.
 
-
 **Message Queuing Telemetry Transport**
+
 MQTT (Message Queuing Telemetry Transport) is a lightweight publish/subscribe messaging protocol, typically running over TCP/TLS. Clients do not send messages directly to one another: they go via a broker.
 The broker:
 - receives messages published by clients 
@@ -218,8 +215,8 @@ The broker:
 - redistributes them to clients subscribed to that topic 
 - manages sessions, subscriptions, retained messages and QoS levels.
 
-
 **mTLS and AWS IoT Core**
+
 mTLS (mutual TLS) means that both parties present a certificate:
 - the server proves its identity to the client
 - the client proves its identity to the server.
@@ -229,7 +226,6 @@ In AWS IoT Core:
 2. The client presents its X.509 certificate and private key.
 3. AWS IoT Core verifies that the client certificate is signed by a trusted CA.
 4. An IoT policy attached to the certificate then authorises the MQTT actions
-
 
 **Requirements for our implants**
 
@@ -251,7 +247,6 @@ Depending on the ESP32’s configuration, we can extract the firmware via:
 - JTAG, which is enabled by default. 
 
 Here, we were able to extract the flash memory very easily via a USB cable.
-
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/dump-flash.png){: width="800" .center}
 
@@ -289,7 +284,6 @@ So:
 Many tutorials add iot:* to * ‘just to make it work’. This is bad practice: it turns a compromised implant into a device capable of widespread publishing, or even subscribing, when it doesn’t need to be.
 
 This YouTube channel gives some very bad advice.
-
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/very-bad-advice.png){: width="800" .center}
 
