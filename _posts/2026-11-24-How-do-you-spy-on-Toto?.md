@@ -158,7 +158,7 @@ that the device implements the following features (whose names are utterly unpro
 
 These values depend on the chipset; consequently, they may vary from one phone to another, and this can strengthen our fingerprint.
 
-**Important information:**
+**Important**
 
 - MAC randomisation has been used for several years. It works differently depending on the OS, version and frame type. For the SSID IoP, this does not matter: the SSID does not change for a given network. However, the MAC address can help link several frames together.
 
