@@ -1,86 +1,87 @@
 
-Savez-vous qu'il est possible, avec très peu de moyens et sans utiliser de tracker GPS, de savoir si vous êtes à un endroit précis ?
+Is it possible, with very limited resources and without using a GPS tracker, to determine whether you are at a specific location?
 
-Savez-vous qu'il est parfois possible de retrouver l'adresse d'une personne en restant quelques minutes à côté d'elle (sans lui demander son adresse) et sans utiliser d'OSINT... ?
+Is it possible to find out someone’s address by standing next to them for a few minutes (without asking for their address) and without using OSINT...?
 
-## Votre mission
+## Your mission
 
-Je vous présente Toto
+Let me introduce you to Toto
 
-Il y a 42 ans, il travaillait à Paris. Il possède une agence funéraire dont vous connaissez l'adresse. Il prend tous les jours un café avec son ami Titi dans le café en face de son adresse.
+He is 42 years old and used to work in Paris. He owns a funeral parlour, the address of which you know. Every day, he has a coffee with his friend Titi at the café opposite his business.
 
-**Vous ne possédez pas l'adresse de Toto.**
+**You do not know Toto's address.**
 
-Votre mission, si vous l'acceptez : espionner Toto. Vous devez être capable, en temps réel et 24 h/24, de dire si Toto se trouve chez lui ou dans son agence funéraire. C'est tout ce que vous devez savoir...
+Your mission, should you choose to accept it: to spy on Toto. You must be able to tell, in real time and 24 hours a day, whether Toto is at home or at his funeral parlour. That’s all you need to know...
 
-Vous ne faites pas partie d'un service de renseignement, vous n'appartenez pas aux forces de l'ordre. Vous avez seulement 10 euros de budget.
+You’re not part of an intelligence service, nor are you a member of the police force. You only have a budget of 10 euros.
 
-Vous n'avez pas le droit d'exploiter de caméras de surveillance.
+You are not permitted to operate CCTV cameras.
 
-Pas de tracker GPS, sinon ce n'est pas marrant, et il n'y a pas d'article.
+No GPS tracker, otherwise it’s no fun, and there’d be no story.
 
 ## Disclaimer
 
-Ce scénario est fictif. Toute ressemblance avec des personnes ou des situations existantes est purement fortuite.
+This scenario is fictional. Any resemblance to real people or situations is purely coincidental.
 
-Je ne suis pas un stalker...
+I’m not a stalker...
 
-## Indicateurs de proximité - directed probe
+## Proximity indicators: directed probe request
 
-Pour remplir votre mission, vous allez vous rendre dans la boutique de cercueils de Toto et vous allez lui expliquer que votre grand-mère Monique vient de mourir et que vous êtes là pour organiser ses obsèques.
 
-Ceci est un prétexte pour passer quelques minutes avec Toto.
+To complete your mission, you’ll go to Toto’s coffin shop and explain to him that your grandmother Monique has just passed away and that you’re there to organise her funeral.
 
-Dans votre poche, une simple ESP32 qui va capturer passivement tous les paquets Wi-Fi autour de vous. L'ESP32 va filtrer tous ces paquets pour ne garder que les Probe Requests dirigées.
+This is just an excuse to spend a few minutes with Toto.
+
+In your pocket, a simple ESP32 C5 that will passively capture all the Wi-Fi packets around you. The ESP32 will filter all these packets to retain only the directed probes
+
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/directed-probe.png){: width="850" .center}
 
-Une Probe Request dirigée est une trame de management 802.11, en clair. Elle sert entre autres au device à :
+A directed probe is, simply put, an 802.11 management frame. Among other things, it enables the device to:
 
-- découvrir un réseau précis dont le client connaît le SSID
-- gérer le roaming vers un autre AP.
+- discover a specific network whose SSID is known to the client
+- manage roaming to another access point.
 
-Même si le device est déjà connecté à un AP, il continuera la plupart du temps à envoyer des directed probe.
+Even if the device is already connected to an access point, it will, in most cases, continue to send directed probes.
 
-La fréquence d'émission dépend de nombreux paramètres, dont l'OS, mais en général elles sont émises toutes les quelques dizaines de secondes (souvent 15 à 60 s, parfois plusieurs minutes).
+The transmission frequency depends on a number of factors, including the operating system, but generally they are transmitted every few tens of seconds (often every 15 to 60 seconds, sometimes every few minutes).
 
-Le téléphone conserve une PNL (Preferred Network List) les réseaux auxquels il s'est déjà connecté. Elle contient souvent les SSID :
-- de votre box (box : Livebox-, Freebox-, SFR_, Bbox-…)
-- routeur du travail
-- mais aussi des réseaux publics
+The phone maintains a PNL (Preferred Network List) of the networks it has previously connected to. This often includes the SSIDs of:
+- your broadband router (e.g. Livebox-, Freebox-, SFR_, Bbox-)
+- your work router
+- as well as public networks
 
-À  l'intérieur d'une directed probe, on retrouve un certain nombre d'éléments. Le plus intéressant pour nous est le SSID du point d'accès recherché par le téléphone de Toto
+A directed probe contains a number of elements. The most interesting one for us is the SSID of the access point that Toto’s phone is searching for.
 
-Vous avez donc un premier indicateur de proximité (IoP). Si vous voyez à un autre endroit ce même SSID, alors cela veut dire que le téléphone de Toto se trouve à proximité et donc probablement à proximité
+So you now have an initial proximity indicator (IoP). If you see that same SSID somewhere else, it means that Toto’s phone is nearby and therefore probably close by
 
-Une seule condition, que le Wi-Fi soit allumé sur le téléphone de Toto. 
+There is one condition: Wi-Fi must be enabled on Toto's phone.
 
-Idéalement, faites l'expérience deux fois à deux endroits différents (par exemple le café en face de l'agence de Toto, où il a ses habitudes) afin de faire un diff des SSID non utiles pour notre mission. Ce serait dommage de se focaliser sur le SSID de Raymond et Huguette, le couple de personnes âgées qui habitent au-dessus de l'agence de Toto.
+Ideally, carry out the experiment twice in two different locations (for example, the café opposite Toto’s agency, where he’s a regular) so that you can filter out the SSIDs that aren’t relevant to our mission. It would be a shame to focus on the SSID belonging to Raymond and Huguette, the elderly couple who live above Toto’s agency.
 
-Après avoir fait un différence des directed probes récupérées dans l'agence de Toto et le bistrot d'à côté, nous avons trouvé ceci :
+After comparing the directed probes captured at Toto's agency and the Toto's bistro, we found the following:
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/fingerprint-probe-directed-cav.png){: width=800" .center}
 
+This directed probe gives us two SSIDs from the same device (same MAC address). This is very useful: we can link both SSIDs to Toto. We now have our IoP
 
-Cette directed probe, nous donne deux SSID depuis le même équipement (même MAC). C'est donc une information qui est très intéressante. Nous pouvons donc relier ces deux SSID à Toto. Nous avons donc notre IoP
+### Directed probe in detail
 
-### Directed probe en détails
-
-Toutes les trames Wi-Fi 802.11 ont un Frame Control de 2 octets dans le header MAC 802.11.
-Pour faire très simple, les premiers octets d'une trame de management commencent par :
+All 802.11 Wi-Fi frames have a 2-byte Frame Control field in the 802.11 MAC header.
+To put it very simply, the first bytes of a management frame begin with:
 
 ```
 bits 0-1 : 00 ---> version
 bits 2-3 : 00 ---> type 0 = management
 ```
 
-Ensuite les 4 prochains bits nous permettent de déterminer la fonction
+The next four bits then allow us to determine the function:
 
 ```
 bits 4-7 : 0100 ---> Probe Request
 ```
 
-Avec cette méthodologie, nous pourrions aussi différencier les autres types de trames :
+Using this methodology, we could also distinguish between other types of frames:
 
 ```
 type (bits 2-3) : 
@@ -90,49 +91,50 @@ type (bits 2-3) :
 11 ---> extension
 ```
 
-Trame de management (directed probe)
+Wi-Fi management frame (directed probe): 
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wireshark-directed-probe.png){: width="1000" .center}
 
-Trame de management (beacon)
+
+Wi-Fi management frame (beacon): 
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wireshark-beacon.png){: width=600" .center}
 
-Par exemple ici, si nous reprenons la DP associée à notre target :
+For example, here, if we look at the directed probe (DP) associated with our target:
 
 ```
 ┌────────┬───────────────────┬───────────────────┬────────────────────────────────────────────────┐
-│ Offset │ Octets            │ Champ             │ Valeur / preuve                                │
+│ Offset │      Bytes        │      Field        │                      Value                     │
 ├────────┼───────────────────┼───────────────────┼────────────────────────────────────────────────┤
-│ 0x00   │ 40 00             │ Frame Control     │ 0x0040 Probe Request Directed                  │
-│ 0x0A   │ 0E D4 16 XX XX XX │ Address MAC       │ MAC source                                     │
-│ 0x18   │ 00 0D             │ SSID IE           │ ID 0, longueur 13                              │
+│ 0x00   │ 40 00             │ Frame Control     │ 0x0040: management, subtype 4 = Probe Request  │
+│ 0x0A   │ 0E D4 16 XX XX XX │ Address 2 (source)│ MAC source                                     │
+│ 0x18   │ 00 0D             │ SSID IE           │ ID 0, length 13                                │
 │ 0x1A   │ 42 61 74 68 69 …  │ SSID              │ "Bathi…"                                       │
 └────────┴───────────────────┴───────────────────┴────────────────────────────────────────────────┘
 ```
 
-Nous retrouvons ensuite le SSID à l'offset 0x1A. C'est cet élément qui nous intéresse le plus. Parfois, il n'est pas présent : la longueur à l'offset 0x18 vaut 0x00. Dans ce cas-là... RIP pour notre IoP.
+We then find the SSID at offset 0x1A. This is the element we’re most interested in. Sometimes it’s not present: the length at offset 0x18 is 0x00. In that case… RIP to our IoP.
 
 **Capabilities**
 
-Il y a d'autres champs intéressants comme VHT Capabilities, Vendor Specific, Extended Capabilities, qui peuvent permettre d'améliorer le fingerprint, car ces informations sont liées au device qui envoie la directed probe
+There are other interesting fields, such as ‘VHT Capabilities’, ‘Vendor Specific’ and ‘Extended Capabilities’, which can help improve the fingerprint, as this information relates to the device sending the directed probe.
 
-Ces infos peuvent parfois nous aider à différencier deux téléphones de marques ou de versions différentes quand on a deux DP avec deux MAC sources et le même SSID.
+This information can sometimes help us distinguish between two phones of different makes or models when we have two probes with two source MAC addresses and the same SSID.
 
-Quelques exemples d'informations qu'il est intéressant de trouver dans une DP:
+Some examples of interesting information to look for in a DP:
 
-- **HT Capabilities** : indique le support 802.11n (Wi-Fi 4).
-- **VHT Capabilities** : MCS/NSS définissent la modulation/codage et le nombre de flux spatiaux. Ces valeurs peuvent varier selon le chipset et le firmware.
-- **Vendor Specific** : contient un IE vendor qui peut parfois nous indiquer le constructeur. Il est très souvent utilisé pour différencier un PC d'un smartphone.
-- **HE 6 GHz Band Capabilities** : indique un support 6 GHz (Wi-Fi 6E).
-- **EHT Capabilities** : indique Wi-Fi 7 (802.11be).
-- **Multi-Link** : indique le support MLO (Wi-Fi 7).
+- **HT Capabilities** : indicates support for 802.11n (Wi-Fi 4).
+- **VHT Capabilities** : MCS/NSS define the modulation/coding and the number of spatial streams. These values may vary depending on the chipset and firmware.
+- **Vendor Specific** : contains a vendor ID which can sometimes tell us the manufacturer. It is very often used to distinguish a PC from a smartphone.
+- **HE 6 GHz Band Capabilities** : indicates support for 6 GHz (Wi-Fi 6E).
+- **EHT Capabilities** : indicates Wi-Fi 7 (802.11be).
+- **Multi-Link** : indicates support for MLO (Wi-Fi 7).
 
-Dans notre cas, nous avons:
+In our case, we have:
 
 ```
 ┌────────┬───────────────────────────────────────────┬───────────────────────────────────┐
-│ Offset │ Octets                                    │ Champ                             │
+│ Offset │                  Bytes                    │              Field                │
 ├────────┼───────────────────────────────────────────┼───────────────────────────────────┤
 │ 0x51   │ BF 0C 32 70 80 0F FE FF 00 00 FE FF 00 00 │ VHT Capabilities                  │
 │ 0x53   │ 32 70 80 0F                               │ VHT Capabilities Info             │
@@ -143,186 +145,192 @@ Dans notre cas, nous avons:
 └────────┴───────────────────────────────────────────┴───────────────────────────────────┘
 ```
 
-Même si nous ne pouvons pas ici savoir de quel device il s'agit, nous pouvons dire, grâce à
+Although we cannot identify the device from this, we can say, thanks to
 
 ```
 HE PHY Capabilities — 44 30 02 00 1D 00 9F 08 00 0C 00
 ```
 
-que le device implémente les features suivantes (dont les noms sont complètement imbuvables, merci Claude...)
+that the device implements the following features (whose names are utterly unpronounceable, thanks, Claude...)
 
-> Interprétation : 5 GHz 40/80 MHz, LDPC, NDP 4x LTF, SU beamformee jusqu’à 8 STS, codebooks 42/75, feedbacks trigger, PPE thresholds, et 1024-QAM sur RU < 242 tones. Pas de 160 MHz, pas de 80+80, pas de STBC, pas de DCM, pas de MU-MIMO.
+> Interpretation: 5 GHz 40/80 MHz, LDPC, NDP 4x LTF, SU beamformee up to 8 STS, codebooks 42/75, trigger feedbacks, PPE thresholds, and 1024-QAM on resource units smaller than 242 subcarriers. No 160 MHz, no 80+80, no STBC, no DCM, no MU-MIMO.
 
-Ces valeurs dépendent du chipset par conséquent, elles peuvent changer en fonction des téléphones et cela peut renforcer notre fingerprint
+These values depend on the chipset; consequently, they may vary from one phone to another, and this can strengthen our fingerprint.
+**Important information:**
 
-**Informations importantes:**
+- MAC randomisation has been used for several years. It works differently depending on the OS, version and frame type. For the SSID IoP, this does not matter: the SSID does not change for a given network. However, the MAC address can help link several frames together.
 
-- La randomisation MAC est utilisée depuis plusieurs années, avec des comportements différents selon l'OS, la version et le type de trame : Dans notre cas, on s'en fiche pour l'IoP SSID, car la trame contient le SSID et celui-ci ne change pas pour un réseau donné. En revanche, la MAC peut servir à relier plusieurs trames entre elles.
-
-- Si nous avons de la chance, notre cible porte une montre connectée, il est très probable qu'elle n'implémente pas de randomisation MAC, nous pouvons donc avoir un fingerprint plus précis.
+- If we’re lucky, our target is wearing a smartwatch; it’s highly likely that it doesn’t use MAC randomisation, so we can obtain a more accurate fingerprint.
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/fingerprint-fort-probes-directed-cav.png){: width="900" .center}
 
-## Retrouver l'adresse de Toto
+## Finding Toto's address
 
-Nous avons rempli la moitié de notre objectif, nous sommes en mesure de déterminer si Toto se trouve dans un lieu précis. En revanche, il nous manque quelque chose, l'adresse de Toto
+We’ve achieved half of our goal; we’re now able to determine whether Toto is in a specific location. However, there’s one thing we’re still missing: Toto’s address.
 
-Bonne nouvelle, il existe une solution technique alimentée par les amateurs de Wardriving : WiGLE
+The good news is that there’s a technical solution developed by wardriving enthusiasts: WiGLE.
 
 <https://wigle.net/>
 
-Avec leur API, vous pouvez assez souvent localiser approximativement le SSID, via les coordonnées GPS où il a été vu par quelqu'un qui fait du Wardriving. Vous obtenez les coordonnées GPS ainsi que la date et l'heure de la dernière apparition.
+Using their API, you can often get an approximate location for the SSID, based on the GPS coordinates where it was spotted by someone wardriving. You’ll receive the GPS coordinates along with the date and time of its last sighting.
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wigle1.png){: width="600" .center}
 
-Petit bonus ici : l'adresse MAC n'étant pas randomisée, en plus de localiser le réseau, nous avons aussi le constructeur du routeur (OUI), mais pas nécessairement le modèle exact.
+Because the MAC address is not randomised, we can also identify the router manufacturer (OUI), but not necessarily the exact model.
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/bonus-mac-identifier.png){: width="850" .center}
 
-**Attention, il y a de nombreux faux positifs : on observe souvent un historique incohérent avec des apparitions à de nombreux endroits. Parfois aussi, nous ne trouvons rien... Soit parce que le SSID n'a jamais été capturé, soit parce qu'une demande pour le retirer de la base WiGLE a été faite.**
+**Please note that there are many false positives: we often see inconsistent history with the SSID appearing in numerous locations. Sometimes we find nothing. Either because the SSID was never captured, or because a request has been made to remove it from the WiGLE database.**
 
-**L'adresse n'est pas toujours extrement précise mais ce n'est pas bloquant pour notre mission. Même sans l'adresse exacte, on peut souvent déduire une zone, une rue ou un quartier, puis placer des implants sur des points de passage potentiels de la cible.**
+**The address is not always very precise, but that does not stop us. Even without the exact address, we can often narrow it down to an area, a street or a neighbourhood, and then place implants in likely places the target passes through might pass through.**
 
-Ce n'est donc pas une solution magique.
+So it does not always work.
 
-## Foutre des implants et terminer notre mission
+## Designing and fitting our tracking devices
 
-**Un point sur la situation**
+**An update on the situation**
 
-Nous avons trouvé l’adresse où habite notre target. Nous avons trouvé des IoP intéressants. La suite de notre mission consiste maintenant à installer des implants près de l’appart de Toto et près de son agence.
+We have found the address where our target lives. We have found some interesting proximity indicators (IoPs). The next stage of our mission is now to install implants near Toto’s flat and near his agency.
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/implants.png){: width="600" .center}
 
-Pourquoi ici ? Parce qu'il est facile d'y planquer des choses et de les récupérer après...
+Why here? Because it’s easy to hide things here and retrieve them later…
 
-Nous pouvons utiliser notre ESP32 avec un petit module 4G et une batterie externe. Notre implant aura pour but de capturer passivement toutes les trames de management Wi-Fi, de filtrer uniquement les Probe Requests dirigées et de nous les envoyer.
+We can use our ESP32 with a small 4G module and an external battery. The implant will will be to passively capture all Wi-Fi management frames, keep only the directed Probe Requests, and send them to us.
 
-Depuis notre poste de travail, nous filtrerons davantage pour nous intéresser uniquement aux IoP de notre target. Nous pouvons aussi effectuer ce filtrage directement dans l'ESP32. Les deux choix se défendent. 
 
-Afin de recevoir les informations en temps réel sur notre PC, une des solutions les plus simples à implémenter est MQTT.
+From our workstation, we will apply further filtering to focus solely on the IoPs from our target. We can also carry out this filtering directly on the ESP32. Both options are valid.
+
+In order to receive information in real time on our PC, one of the simplest solutions to implement is MQTT.
+
 
 **Message Queuing Telemetry Transport**
-MQTT (Message Queuing Telemetry Transport) est un protocole de messagerie publish/subscribe léger, généralement transporté au-dessus de TCP/TLS. Les clients ne s’envoient pas directement des messages : ils passent par un broker.
-Le broker :
-- reçoit les messages publiés par les clients 
-- les filtre par topic 
-- les redistribue aux clients abonnés à ce topic 
-- gère les sessions, les abonnements, les éventuels messages retenus et les niveaux de QoS.
+MQTT (Message Queuing Telemetry Transport) is a lightweight publish/subscribe messaging protocol, typically running over TCP/TLS. Clients do not send messages directly to one another: they go via a broker.
+The broker:
+- receives messages published by clients 
+- filters them by topic 
+- redistributes them to clients subscribed to that topic 
+- manages sessions, subscriptions, retained messages and QoS levels.
 
-**mTLS et AWS IoT Core**
-mTLS (mutual TLS) signifie que les deux parties présentent un certificat :
-- le serveur prouve son identité au client
-- le client prouve son identité au serveur.
+
+**mTLS and AWS IoT Core**
+mTLS (mutual TLS) means that both parties present a certificate:
+- the server proves its identity to the client
+- the client proves its identity to the server.
   
-Dans AWS IoT Core :
-1. Le client vérifie le certificat du serveur avec l’Amazon Root CA.
-2. Le client présente son certificat X.509 et sa private key.
-3. AWS IoT Core vérifie que le certificat client est signé par une CA de confiance.
-4. Une IoT policy attachée au certificat autorise ensuite les actions MQTT.
+In AWS IoT Core:
+1. The client verifies the server’s certificate against the Amazon Root CA.
+2. The client presents its X.509 certificate and private key.
+3. AWS IoT Core verifies that the client certificate is signed by a trusted CA.
+4. An IoT policy attached to the certificate then authorises the MQTT actions
 
-**Les besoins pour nos implants**
 
-Il faut distinguer les secrets des paramètres MQTT :
+**Requirements for our implants**
+
+It is important to distinguish between secrets and MQTT parameters:
 - Amazon Root CA
-- Certificat device
+- Device certificate
 - Private key
-- Endpoint AWS IoT, Client ID, Topic
+- AWS IoT endpoint, Client ID, Topic
 
-Nous devons donc installer un ensemble de certificats et private key dans la flash de l'ESP32. Et c'est là que les problèmes commencent.
+We therefore need to install a set of certificates and a private key into the ESP32’s flash memory. And that’s where the problems begin.
 
-**Usurper l'identité device**
+**Device impersonation**
 
-Si quelqu'un récupère notre implant et extrait la flash et qu'elle n'est pas chiffrée on peut très facilement obtenir les secrets mTLS et pourra se faire passer pour notre ESP32.
+If someone recovers our implant and extracts the flash memory (if it is not encrypted), they can very easily obtain the mTLS secrets and impersonate our ESP32.
 
-En fonction de la configuration de l'ESP32, nous pouvons extraire le firware via
-- câble USB UART
-- JTAG activé par défaut. 
+Depending on the ESP32’s configuration, we can extract the firmware via:
+- a USB-UART cable
+- UART pins
+- JTAG, which is enabled by default. 
 
-Ici, nous avons extrait très facilement la mémoire flash par câble USB.
+Here, we were able to extract the flash memory very easily via a USB cable.
+
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/dump-flash.png){: width="800" .center}
 
-Pour JTAG openocd avec le FT232H suffit largement. Des choses très amusantes peuvent être faites avec JTAG. Par exemple dumper la RAM de mon ESP32 pourtant avec flash encryption et récupérer des secrets mTLS... Je dis ça je dis rien...
+For JTAG, OpenOCD with the FT232H is more than enough. You can do some really interesting things with JTAG. For example, dumping the RAM of my ESP32, even with flash encryption and retrieving mTLS secrets… Just saying…
 
 <https://github.com/openocd-org/openocd>
 
-L’idéal est donc d’activer a minima :
-- le chiffrement de la flash (flash encryption) 
-- le secure boot 
-- la désactivation de JTAG via eFuse 
-- si possible, la désactivation du download UART
+Ideally, you should therefore enable at least the following:
+- flash encryption 
+- secure boot 
+- disabling JTAG via eFuse
+- if possible, disabling the UART download
 
+**On the PC**
 
-**Coté PC**
-
-Notre ESP32 envoie maintenant les IoP en MQTT. Côté PC, nous pouvons utiliser un client MQTT ou l’AWS IoT Device SDK v2 pour recevoir les paquets.
+Our ESP32 is now sending IoP data via MQTT. On the PC, we can use an MQTT client or the AWS IoT Device SDK v2 to receive the packets.
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/example-SDK-AWS-subscribe.png){: width="800" .center}
 
-**Un peu de bonne pratique**
+## What could possibly go wrong? 
 
-Nous faisons de la cyber, donc autant configurer correctement les permissions et les policies AWS.
-AWS IoT Core définit plusieurs actions de policy. Les quatre actions MQTT principales sont :
-- **iot:Connect** : établir la session MQTT 
-- **iot:Publish** : publier sur un topic 
-- **iot:Subscribe** : s’abonner à un topic filter 
-- **iot:Receive** : recevoir les messages d'un abonnement
+**A few best practices**
 
-Donc :
-- **ESP32** : iot:Connect + iot:Publish 
-- **PC** : iot:Connect + iot:Subscribe + iot:Receive 
+We’re working in cybersecurity, so we might as well configure AWS permissions and policies correctly.
+AWS IoT Core defines several policy actions. The four main MQTT actions are:
+- **iot:Connect**: establish the MQTT session 
+- **iot:Publish**: publish to a topic 
+- **iot:Subscribe**: subscribe to a topic filter 
+- **iot:Receive**: receive messages from a subscription
 
-Beaucoup de tutos ajoutent iot:* sur * « pour que ça marche ». C’est une mauvaise pratique : ça transforme un implant compromis en capacité de publication large, voire de subscription, alors qu’il n’en a pas besoin.
+So:
+- **ESP32**: iot:Connect + iot:Publish 
+- **PC**: iot:Connect + iot:Subscribe + iot:Receive 
 
-Très mauvais conseil à suivre sur cette chaine youtube
+Many tutorials add iot:* to * ‘just to make it work’. This is bad practice: it turns a compromised implant into a device capable of widespread publishing, or even subscribing, when it doesn’t need to be.
+
+This YouTube channel gives some very bad advice.
+
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/very-bad-advice.png){: width="800" .center}
 
 <https://www.youtube.com/watch?v=59xppRDOEZE>
 
-Ce n'est pas la seule mauvaise ressource et les LLM font souvent la même chose si on ne lui précise pas les choses correctement (parfois même quand on lui demande)
+This isn’t the only problematic resource, and LLMs often behave in the same way if you don’t specify things correctly (sometimes even when you do ask them).
 
-L’idéal est d’avoir une identité par rôle :
-- une identité pour l’ESP32, avec une policy publish-only + Connect
-- une identité pour le PC, avec une policy subscribe + receive + Connect.
+Ideally, you should have one identity per role:
+- one identity for the ESP32, with a ‘publish-only’ policy + Connect
+- one identity for the PC, with a ‘subscribe’ + ‘receive’ + Connect policy.
 
-**Un peu de forensique**
+**Some forensics**
 
-Autre point à ne pas négliger...
+Another point not to be overlooked...
 
-Si vous utilisez l'IDE Arduino ou ESP-IDF (ce que je vous déconseille), l'ESP32 stocke vos credentials Wi-Fi dans la NVS **par défaut**. Le gros avantage (ou l'inconvénient, selon le point de vue), c'est que si vous changez de firmware ou de credentials Wi-Fi, les anciens restent sauvegardés tant que vous n'effacez pas entièrement la flash...
+If you are using the Arduino IDE or ESP-IDF (which I wouldn’t recommend), the ESP32 stores your Wi-Fi credentials in the NVS by default. The big advantage (or disadvantage, depending on your point of view) is that if you change the firmware or your Wi-Fi credentials, the old ones remain stored until you completely erase the flash...
 
-Une fois la flash extraite si vous utilisez esp-idf ou l'IDE Arduino, il sera très facile d'extraire la table des partitions et la nvs avec l'outil suivant:
+Once the flash has been extracted, whether you use ESP-IDF or the Arduino IDE, it’s very easy to extract the partition table and the NVS using the following tool:
 
 <https://github.com/BlackVS/esp32knife>
 
+This will reveal the partition table. By default, it is located at offset 0x8000 when using ESP-IDF. It could even be extracted manually...
 
-On retrouve la table des partitions. Par defaut elle se trouve à l'offset 0x8000 quand on utilise esp-idf. Elle pourrait même être extraite à la main...
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/partitions-table.png){: width="600" .center}
 
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/partitions-table.png){: "width="600" .center}
-
-Une fois la table des partitions en main, on peut extraire la NVS et aller chercher les credentials Wi-Fi qui sont stocké par défaut.
+Once you have the partition table, you can extract the NVS and retrieve the Wi-Fi credentials that are stored by default.
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds1.png){: width="700" .center}
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds2.png){: width="700" .center}
 
-Qui dit SSID Wi-Fi dit WiGLE, et il serait couillon que votre target trouve l'adresse où l'implant a été développé...
+Where there’s a Wi-Fi SSID, there’s WiGLE, and it would be bad if your target were to find the address where the implant was developed...
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/nvs-creds3.png){: width="600" .center}
 
-Si malheureusement notre ESP32 est récupéré et que son nouveau propriétaire ou les forces de l'ordre arrivent à extraire les secrets, il pourra usurper l’identité de l’implant et publier de fausses données sur les topics autorisés. Cela peut devenir gênant.
+If, unfortunately, our ESP32 is stolen and its new owner or the police manage to extract the secrets, they will be able to impersonate the implant and publish false data on the authorised topics. This could become a problem.
 
-Vous allez me dire s'il peut juste envoyer des fausses données pour faire échouer notre mission c'est déjà chiant et vous avez raison. Mais bon on fait de la cyber ici donc un mimima, je dis bien un minima de bonnes pratiques c'est mieux. Même si on peut rajouter beaucoup de choses...
+You might say that if someone can just send fake data to sabotage our mission, that is a real problem, and you’d be right. But hey, we’re dealing with cybersecurity here, so a minimum, and I mean a bare minimum, of best practices is better. Even if there’s plenty more we could add...
 
 ## Conclusion
 
-**Première question : peut-on savoir facilement si quelqu’un est à un endroit précis sans tracker GPS ?**
+**First question: is it easy to tell if someone is at a specific location without a GPS tracker?**
 
-Oui. Avec une simple ESP32, quelques minutes sur place et le Wi-Fi activé sur le téléphone de la cible, on peut capter les directed probe. Si l’on repère un SSID propre à Toto (la box de chez lui, de son agence...) on obtient un indicateur de présence fort si l'on revoit les mêmes SSID dans des directed probe
+Yes. With a simple ESP32, a few minutes on site and Wi-Fi enabled on the target’s phone, you can capture directed probes. If you see an SSID specific to Toto (his home router, his office router, etc.), that is a strong sign he is nearby.. Seeing the same SSIDs again at another place makes it stronger
 
-Ce n’est pas une preuve absolue, car plusieurs appareils peuvent connaître le même SSID, mais cela suffit souvent pour savoir si notre target est passé par là.
+This isn’t conclusive proof, as several devices may share the same SSID, but it’s often enough to tell whether our target has been in the area.
 
-**Deuxième question : peut-on retrouver son adresse en restant quelques minutes à côté de lui, sans OSINT ?**
+**Second question: can we find out their address by staying near them for a few minutes, without using OSINT?**
 
-C’est plus délicat. WiGLE peut donner parfois une adresse exacte mais souvent une localisation approximative et parfois du grand n'importe quoi. L'idéale est de garder uniquement les résultats les plus récents de WiGLE et idéalement avoir un historique qui pointe au même endroit
+It is more difficult.. WiGLE can sometimes give an exact address, but often provides an approximate location and sometimes completely wrong. The best approach is to keep only the most recent WiGLE results and, ideally, have a history that all points to the same place.
