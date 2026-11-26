@@ -20,7 +20,6 @@ He is 42 years old and used to work in Paris. He owns a funeral parlour, the add
 Your mission, should you choose to accept it: to spy on Toto. You must be able to tell, in real time and 24 hours a day, whether Toto is at home or at his funeral parlour. That’s all you need to know...
 
 You’re not part of an intelligence service, nor are you a member of the police force. You only have a budget of 10 euros.
-
 You are not permitted to operate CCTV cameras.
 
 No GPS tracker, otherwise it’s no fun, and there’d be no story.
@@ -28,7 +27,6 @@ No GPS tracker, otherwise it’s no fun, and there’d be no story.
 ## Disclaimer
 
 This scenario is fictional. Any resemblance to real people or situations is purely coincidental.
-
 I’m not a stalker...
 
 ## Proximity indicators: directed probe request
@@ -180,13 +178,13 @@ Using their API, you can often get an approximate location for the SSID, based o
 
 ![alt text](/assets/img/posts/How-do-you-spy-on-Toto/wigle1.png){: width="600" .center}
 
-Because the MAC address is not randomised, we can also identify the router manufacturer (OUI), but not necessarily the exact model.
-
-![alt text](/assets/img/posts/How-do-you-spy-on-Toto/bonus-mac-identifier.png){: width="850" .center}
-
 **Please note that there are many false positives: we often see inconsistent history with the SSID appearing in numerous locations. Sometimes we find nothing. Either because the SSID was never captured, or because a request has been made to remove it from the WiGLE database.**
 
 **The address is not always very precise, but that does not stop us. Even without the exact address, we can often narrow it down to an area, a street or a neighbourhood, and then place implants in likely places the target passes through might pass through.**
+
+Because the MAC address is not randomised, we can also identify the router manufacturer (OUI), but not necessarily the exact model.
+
+![alt text](/assets/img/posts/How-do-you-spy-on-Toto/bonus-mac-identifier.png){: width="850" .center}
 
 So it does not always work.
 
