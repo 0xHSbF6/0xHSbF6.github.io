@@ -1,11 +1,9 @@
 ---
-title: How to disable a surveillance camera?
+title: How to disable a surveillance camera ?
 date: 2026-04-03
 categories: [IoT]
 tags: [IoT, Home Automation, Radio Frequency]
 ---
-
-# How to disable a surveillance camera?
 
 ## Context
 

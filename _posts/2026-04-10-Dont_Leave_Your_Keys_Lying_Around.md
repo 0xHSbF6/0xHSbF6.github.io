@@ -5,8 +5,6 @@ categories: [IoT]
 tags: [IoT, NFC, Home Automation]
 ---
 
-# Don't Leave Your Keys Lying Around
-
 ## Context
 
 Your colleague Toto has installed a cheap connected lock at his place, bought online. Your mission is to get inside.

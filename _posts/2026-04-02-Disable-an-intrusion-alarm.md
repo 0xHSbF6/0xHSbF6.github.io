@@ -5,8 +5,6 @@ categories: [IoT]
 tags: [IoT, Home Automation, Radio Frequency]
 ---
 
-# How to disable an intrusion alarm?
-
 ## Introduction
 
 This article targets entry-level to mid-range wireless home intrusion alarms that communicate on the `ISM 433 MHz` band.

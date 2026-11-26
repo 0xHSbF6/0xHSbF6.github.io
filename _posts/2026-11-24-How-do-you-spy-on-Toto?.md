@@ -1,3 +1,9 @@
+---
+title: How do you spy on Toto ? 
+date: 2026-11-26
+categories: [IoT]
+tags: [Wi-Fi, tracking, ESP32]
+---
 
 Is it possible, with very limited resources and without using a GPS tracker, to determine whether you are at a specific location?
 

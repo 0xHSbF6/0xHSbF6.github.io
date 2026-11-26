@@ -5,8 +5,6 @@ categories: [IoT]
 tags: [IoT, Home Automation, Radio Frequency]
 ---
 
-# Reverse Engineering RF433 Remotes
-
 ## Introduction
 
 Many remotes used to open garage gates or to arm/disarm entry-level intrusion alarms use a `433.92 MHz` carrier frequency.

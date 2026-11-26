@@ -5,8 +5,6 @@ categories: [IoT]
 tags: [bluetooth, reverse-engineering, BLE, IoT]
 ---
 
-# LoveSpouse BLE Reverse
-
 ## Context
 
 Most entry-level and mid-range sex toys are vulnerable to unauthenticated Bluetooth packet injection attacks.
